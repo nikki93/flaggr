@@ -34,6 +34,8 @@ function server.connect(clientId)
 
         player.y = H - G
         player.x = (W - G) * math.random()
+
+        player.yDir = 'none' -- 'up', 'down' or 'none' depending on current Y stepping direction
     end
 end
 
@@ -53,22 +55,48 @@ function server.update(dt)
             do -- Walk
                 local walk = homes[clientId].walk
                 if walk then
-                    local vx, vy = 0, 0
-                    if walk.left then
-                        vx = vx - WALK_SPEED
+                    do -- X
+                        local vx = 0
+                        if walk.left then
+                            vx = vx - PLAYER_X_SPEED
+                        end
+                        if walk.right then
+                            vx = vx + PLAYER_X_SPEED
+                        end
+                        player.x = player.x + vx * dt
+                        player.x = math.max(0, math.min(player.x, W - G))
                     end
-                    if walk.right then
-                        vx = vx + WALK_SPEED
+
+                    do -- Y
+                        if player.yDir ~= 'none' then -- Y stepping
+                            if player.yDir == 'up' then
+                                local prevStep = math.floor(player.y / G + 0.9999) -- Which grid step were we at?
+                                player.y = player.y - PLAYER_Y_SPEED * dt
+                                local nextStep = math.floor(player.y / G + 0.9999) -- Which grid step did we get to?
+                                if nextStep ~= prevStep then -- Jumped a step, we're done
+                                    player.yDir = 'none'
+                                    player.y = (nextStep) * G
+                                end
+                            end
+                            if player.yDir == 'down' then
+                                local prevStep = math.floor(player.y / G + 0.1) -- Which grid step were we at?
+                                player.y = player.y + PLAYER_Y_SPEED * dt
+                                local nextStep = math.floor(player.y / G + 0.1) -- Which grid step did we get to?
+                                if nextStep ~= prevStep or nextStep >= H / G then -- Jumped a step, we're done
+                                    player.yDir = 'none'
+                                    player.y = (nextStep) * G
+                                end
+                            end
+                            player.y = math.max(0, math.min(player.y, H - G))
+                        end
+
+                        if player.yDir == 'none' and walk.up then
+                            player.yDir = 'up'
+                        end
+                        if player.yDir == 'none' and walk.down then
+                            player.yDir = 'down'
+                        end
                     end
-                    if walk.up then
-                        vy = vy - WALK_SPEED
-                    end
-                    if walk.down then
-                        vy = vy + WALK_SPEED
-                    end
-                    player.x, player.y = player.x + vx * dt, player.y + vy * dt
-                    player.x = math.max(0, math.min(player.x, W - G))
-                    player.y = math.max(0, math.min(player.y, H - G))
                 end
             end
         end
