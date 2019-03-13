@@ -1,0 +1,6 @@
+---
+main: main.lua
+title: Flaggr!
+owner: nikki
+multiplayer:
+    - enabled: true
