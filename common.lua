@@ -6,8 +6,9 @@ cs = require 'https://raw.githubusercontent.com/castle-games/share.lua/937295335
 W, H = 560, 840 -- Game width, game height
 G = 28 -- Grid size
 
-PLAYER_X_SPEED = 200
-PLAYER_Y_SPEED = 200
+PLAYER_X_SPEED = 250
+PLAYER_Y_SPEED = 250
+PLAYER_KEY_DELAY = 0.04
 
 DEBUG = true
 
