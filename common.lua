@@ -3,8 +3,10 @@ cs = require 'https://raw.githubusercontent.com/castle-games/share.lua/937295335
 
 --- CONSTANTS
 
-W, H = 550, 800 -- Game width, game height
+W, H = 560, 840 -- Game width, game height
 G = 28 -- Grid size
+
+WALK_SPEED = 400
 
 
 --- GRAPHICS UTILS

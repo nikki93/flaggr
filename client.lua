@@ -1,5 +1,6 @@
 require 'common'
 
+
 --- CLIENT
 
 local client = cs.client
@@ -13,6 +14,16 @@ end
 
 local share = client.share
 local home = client.home
+
+
+--- CONNECT
+
+function client.connect()
+    do -- Walk
+        home.walk = { up = false, down = false, left = false, right = false }
+    end
+end
+
 
 --- DRAW
 
@@ -36,10 +47,47 @@ function client.draw()
             do -- Border
                 love.graphics.setColor(1, 1, 1)
                 love.graphics.setLineWidth(6)
-                love.graphics.line(0, 1, 0, H, W - 1, H, W - 1, 1, 0, 1)
+                love.graphics.line(1, 1, 1, H, W, H, W, 1, 1, 1)
             end
         end)
     else
         love.graphics.print('connecting', 20, 20)
+    end
+end
+
+
+--- KEYBOARD
+
+function client.keypressed(key)
+    do -- Player
+        if key == 'left' then
+            home.walk.left = true
+        end
+        if key == 'right' then
+            home.walk.right = true
+        end
+        if key == 'up' then
+            home.walk.up = true
+        end
+        if key == 'down' then
+            home.walk.down = true
+        end
+    end
+end
+
+function client.keyreleased(key)
+    do -- Player
+        if key == 'left' then
+            home.walk.left = false
+        end
+        if key == 'right' then
+            home.walk.right = false
+        end
+        if key == 'up' then
+            home.walk.up = false
+        end
+        if key == 'down' then
+            home.walk.down = false
+        end
     end
 end
