@@ -49,6 +49,16 @@ function client.draw()
                 love.graphics.setLineWidth(6)
                 love.graphics.line(1, 1, 1, H, W, H, W, 1, 1, 1)
             end
+
+            love.graphics.setScissor()
+
+            if DEBUG then -- Debug
+                love.graphics.setLineWidth(1)
+                for i = 0, H / G - 1 do
+                    love.graphics.print(i, -20, i * G + 4)
+                    love.graphics.line(0, i * G, W, i * G)
+                end
+            end
         end)
     else
         love.graphics.print('connecting', 20, 20)

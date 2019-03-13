@@ -8,6 +8,8 @@ G = 28 -- Grid size
 
 WALK_SPEED = 400
 
+DEBUG = true
+
 
 --- GRAPHICS UTILS
 
