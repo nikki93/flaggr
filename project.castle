@@ -1,5 +1,5 @@
 ---
-main: local.lua
+main: castle.lua
 title: Flaggr!
 owner: nikki
 multiplayer:
