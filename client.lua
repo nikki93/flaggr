@@ -20,7 +20,7 @@ local home = client.home
 
 function client.connect()
     do -- Walk
-        home.walk = { left = false, right = false }
+        home.walk = { up = false, down = false, left = false, right = false }
     end
 end
 
@@ -77,10 +77,10 @@ function client.keypressed(key)
             home.walk.right = true
         end
         if key == 'up' then
-            client.send('up')
+            home.walk.up = true
         end
         if key == 'down' then
-            client.send('down')
+            home.walk.down = true
         end
     end
 end
@@ -92,6 +92,12 @@ function client.keyreleased(key)
         end
         if key == 'right' then
             home.walk.right = false
+        end
+        if key == 'up' then
+            home.walk.up = false
+        end
+        if key == 'down' then
+            home.walk.down = false
         end
     end
 end
