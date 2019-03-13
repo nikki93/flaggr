@@ -44,6 +44,13 @@ function client.draw()
                 end
             end
 
+            do -- Cars
+                for carId, car in pairs(share.cars) do
+                    love.graphics.setColor(1, 0, 0)
+                    love.graphics.rectangle('fill', car.x, car.y, car.length, G)
+                end
+            end
+
             do -- Border
                 love.graphics.setColor(1, 1, 1)
                 love.graphics.setLineWidth(6)

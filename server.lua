@@ -16,11 +16,32 @@ local share = server.share
 local homes = server.homes
 
 
+--- UTIL
+
+local nextId = 1
+function genId()
+    local id = nextId
+    nextId = nextId + 1
+    return id
+end
+
+function resetPlayer(player)
+    player.died = false
+    player.y = H - 2 * G
+    player.x = (W - G) * math.random()
+    player.yDir = 'none' -- 'up', 'down' or 'none' depending on current Y stepping direction
+end
+
+
 --- LOAD
 
 function server.load()
     do -- Players
         share.players = {}
+    end
+
+    do -- Cars
+        share.cars = {}
     end
 end
 
@@ -31,11 +52,7 @@ function server.connect(clientId)
     do -- New player
         share.players[clientId] = {}
         local player = share.players[clientId]
-
-        player.y = H - G
-        player.x = (W - G) * math.random()
-
-        player.yDir = 'none' -- 'up', 'down' or 'none' depending on current Y stepping direction
+        resetPlayer(player)
     end
 end
 
@@ -112,6 +129,63 @@ function server.update(dt)
                         end
                     end
                 end
+            end
+        end
+    end
+
+    do -- Car spawns
+        for i, spawn in ipairs(CAR_SPAWNS) do
+            -- Reset timer?
+            if not spawn.timer then
+                spawn.timer = spawn.timerMin + (spawn.timerMax - spawn.timerMin) * math.random()
+            end
+
+            -- Tick the timer!
+            spawn.timer = spawn.timer - dt
+
+            -- Timer fired? Spawn a car!
+            if spawn.timer <= 0 then
+                spawn.timer = nil
+
+                local id = genId()
+                share.cars[id] = {}
+                local car = share.cars[id]
+
+                car.y = spawn.y
+                car.length = spawn.length
+                if spawn.dir == 'right' then
+                    car.x = -car.length
+                    car.xSpeed = spawn.xSpeed
+                end
+                if spawn.dir == 'left' then
+                    car.x = W
+                    car.xSpeed = -spawn.xSpeed
+                end
+            end
+        end
+    end
+
+    do -- Car motion
+        for carId, car in pairs(share.cars) do
+            car.x = car.x + car.xSpeed * dt
+        end
+    end
+
+    do -- Collisions
+        for clientId, player in pairs(share.players) do
+            for carId, car in pairs(share.cars) do
+                if player.x <= car.x + car.length and player.x + G >= car.x and
+                    player.y + PLAYER_COL_Y_EPS < car.y + G and player.y + G > car.y + PLAYER_COL_Y_EPS then
+                    player.died = true
+                end
+            end
+        end
+    end
+
+    do -- Death
+        for clientId, player in pairs(share.players) do
+            if player.died then
+                resetPlayer(player)
             end
         end
     end
