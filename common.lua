@@ -7,7 +7,7 @@ W, H = 560, 840 -- Game width, game height
 G = 28 -- Grid size
 
 PLAYER_X_SPEED = 250
-PLAYER_Y_SPEED = 250
+PLAYER_Y_SPEED = 320
 PLAYER_KEY_DELAY = 0.04
 
 DEBUG = true
