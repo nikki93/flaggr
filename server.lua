@@ -45,6 +45,22 @@ function server.disconnect(clientId)
 end
 
 
+--- RECEIVE
+
+function server.receive(clientId, msg)
+    do -- Player
+        local player = share.players[clientId]
+        if msg == 'up' then
+            player.y = player.y - G
+        end
+        if msg == 'down' then
+            player.y = player.y + G
+        end
+        player.y = math.max(0, math.min(player.y, H - G))
+    end
+end
+
+
 --- UPDATE
 
 function server.update(dt)
@@ -53,22 +69,15 @@ function server.update(dt)
             do -- Walk
                 local walk = homes[clientId].walk
                 if walk then
-                    local vx, vy = 0, 0
+                    local vx = 0
                     if walk.left then
                         vx = vx - WALK_SPEED
                     end
                     if walk.right then
                         vx = vx + WALK_SPEED
                     end
-                    if walk.up then
-                        vy = vy - WALK_SPEED
-                    end
-                    if walk.down then
-                        vy = vy + WALK_SPEED
-                    end
-                    player.x, player.y = player.x + vx * dt, player.y + vy * dt
+                    player.x = player.x + vx * dt
                     player.x = math.max(0, math.min(player.x, W - G))
-                    player.y = math.max(0, math.min(player.y, H - G))
                 end
             end
         end
