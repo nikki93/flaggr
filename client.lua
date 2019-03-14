@@ -78,8 +78,10 @@ end
 --- UPDATE
 
 function client.update(dt)
-    do -- Time
-        share.time = share.time + dt
+    if client.connected then
+        do -- Time
+            share.time = share.time + dt
+        end
     end
 end
 
