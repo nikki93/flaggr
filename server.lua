@@ -36,6 +36,10 @@ end
 --- LOAD
 
 function server.load()
+    do -- Time
+        share.time = love.timer.getTime()
+    end
+
     do -- Players
         share.players = {}
     end
