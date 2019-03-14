@@ -419,9 +419,9 @@ for cbName, where in pairs(loveCbs) do
                 client.kick()
             end
         end
-        if cbName == 'update' then
-            firing = (firing + 1) % 2
-        end
+        -- if cbName == 'update' then
+        --     firing = (firing + 1) % 2
+        -- end
     end
 end
 
