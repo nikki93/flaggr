@@ -12,6 +12,7 @@ PLAYER_KEY_DELAY = 0.04
 PLAYER_COL_Y_EPS = 0.01
 
 CAR_SPAWNS = {
+    -- Bottom cars
     {
         y = 26 * G,
         xSpeed = 180,
@@ -26,8 +27,34 @@ CAR_SPAWNS = {
         dir = 'left',
         timerMin = 0.8,
         timerMax = 2,
+        length = 3 * G,
+    },
+    {
+        y = 24 * G,
+        xSpeed = 400,
+        dir = 'right',
+        timerMin = 0.8,
+        timerMax = 2,
         length = 2 * G,
-    }
+    },
+
+    -- Trains
+    {
+        y = 20 * G,
+        xSpeed = 800,
+        dir = 'right',
+        timerMin = 5,
+        timerMax = 8,
+        length = 20 * G,
+    },
+    {
+        y = 19 * G,
+        xSpeed = 800,
+        dir = 'left',
+        timerMin = 5,
+        timerMax = 8,
+        length = 20 * G,
+    },
 }
 
 DEBUG = true
