@@ -64,7 +64,9 @@ end
 --- DISCONNECT
 
 function server.disconnect(clientId)
-    print('client ' .. id .. ' disconnected')
+    do -- Remove player
+        share.players[clientId] = nil
+    end
 end
 
 
