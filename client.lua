@@ -65,8 +65,6 @@ function client.draw()
                     love.graphics.print(i, -20, i * G + 4)
                     love.graphics.line(0, i * G, W, i * G)
                 end
-
-                love.graphics.print(share.players[1].yDir, 0, -30)
             end
         end)
     else
