@@ -6,7 +6,7 @@ cs = require 'cs'
 W, H = 560, 560 -- Game width, game height
 G = 28 -- Grid size
 
-EASINESS = 0.92
+EASINESS = 0.85
 
 PLAYER_X_SPEED = 250
 PLAYER_Y_SPEED = 320
@@ -24,7 +24,7 @@ FLAG_DROP_RESET_TIME = 10
 
 SCORE_FLAGS_PER_GAME = 10
 
-INSTRUCTIONS_SHOW_TIME = 20
+INSTRUCTIONS_SHOW_TIME = 15
 
 CAR_SPAWNS = {
     -- Bottom cars

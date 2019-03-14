@@ -28,9 +28,9 @@ function drawPlayer(player, x, y, isOwn)
     end
     love.graphics.circle('fill', x + 0.5 * G, y + 0.5 * G, 0.5 * G)
     if isOwn then
-        love.graphics.setLineWidth(2)
+        love.graphics.setLineWidth(4)
         love.graphics.setColor(1, 1, 1)
-        love.graphics.circle('line', x + 0.5 * G, y + 0.5 * G, 0.5 * G - 1)
+        love.graphics.circle('line', x + 0.5 * G, y + 0.5 * G, 0.5 * G - 2)
     end
 end
 
@@ -50,6 +50,7 @@ end
 
 local deathFont = love.graphics and love.graphics.newFont('font.ttf', 36)
 local scoreFont = love.graphics and love.graphics.newFont('font.ttf', 24)
+local flagResetFont = love.graphics and love.graphics.newFont('font.ttf', 20)
 local instrFont = love.graphics and love.graphics.newFont('font.ttf', 20)
 
 function client.draw()
@@ -79,14 +80,14 @@ function client.draw()
 
             do -- Logs
                 for logId, log in pairs(share.logs) do
-                    love.graphics.setColor(0.65, 0.16, 0.16)
+                    love.graphics.setColor(0.65, 0.26, 0.26)
                     love.graphics.rectangle('fill', log.startX + (share.time - log.startTime) * log.xSpeed, log.y, log.length, G)
                 end
             end
 
             do -- Cars
                 for carId, car in pairs(share.cars) do
-                    love.graphics.setColor(1, 0, 0)
+                    love.graphics.setColor(0.7, 0.7, 0.7)
                     love.graphics.rectangle('fill', car.startX + (share.time - car.startTime) * car.xSpeed, car.y, car.length, G)
                 end
             end
@@ -141,7 +142,7 @@ function client.draw()
                     local w, h = deathFont:getWidth(text), deathFont:getHeight()
                     love.graphics.stacked('all', function()
                         love.graphics.setFont(deathFont)
-                        love.graphics.print(text, 0.5 * (W - w), H + 5)
+                        love.graphics.print(text, 0.5 * (W - w), H + 10)
                     end)
                 end
             end
@@ -149,11 +150,11 @@ function client.draw()
             do -- Flag reset message
                 if share.flag.dropTime then
                     local text = tostring(math.max(0, math.floor(FLAG_DROP_RESET_TIME - (share.time - share.flag.dropTime) + 0.999)))
-                    local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
+                    local w, h = flagResetFont:getWidth(text), flagResetFont:getHeight()
                     love.graphics.stacked('all', function()
                         love.graphics.setColor(0, 0, 0)
-                        love.graphics.setFont(scoreFont)
-                        love.graphics.print(text, share.flag.x + 0.5 * G - 0.5 * w, share.flag.y + 0.5 * G - 0.5 * h)
+                        love.graphics.setFont(flagResetFont)
+                        love.graphics.print(text, share.flag.x + 0.5 * G - 0.5 * w + 2, share.flag.y + 0.5 * G - 0.5 * h + 2)
                     end)
                 end
             end

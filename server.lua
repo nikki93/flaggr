@@ -374,6 +374,8 @@ function server.update(dt)
         if share.flag.carrierClientId then
             local carrierPlayer = share.players[share.flag.carrierClientId]
             if carrierPlayer.y + PLAYER_COL_Y_EPS >= H - G then
+                carrierPlayer.carrying = false
+
                 share.score.flags[carrierPlayer.team] = share.score.flags[carrierPlayer.team] + 1
 
                 if share.score.flags[carrierPlayer.team] >= SCORE_FLAGS_PER_GAME then
