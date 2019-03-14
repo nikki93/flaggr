@@ -34,6 +34,8 @@ function drawPlayer(player, x, y, isOwn)
     end
 end
 
+local clientStartTime = love.timer.getTime()
+
 
 --- CONNECT
 
@@ -184,7 +186,7 @@ function client.draw()
                 end)
             end
 
-            do -- Instructions message
+            if love.timer.getTime() - clientStartTime < INSTRUCTIONS_SHOW_TIME then -- Instructions message
                 local text = {
                     { 1, 1, 1 }, 'Arrows to move, SPACE to bomb\nFetch ',
                     { 0.8, 0.8, 0 }, 'FLAG',
