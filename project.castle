@@ -2,6 +2,6 @@
 main: castle.lua
 title: Flaggr!
 owner: nikki
+coverImage: cover.png
 multiplayer:
     - enabled: true
-version: 14
