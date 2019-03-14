@@ -47,7 +47,7 @@ function client.draw()
             do -- Cars
                 for carId, car in pairs(share.cars) do
                     love.graphics.setColor(1, 0, 0)
-                    love.graphics.rectangle('fill', car.x, car.y, car.length, G)
+                    love.graphics.rectangle('fill', car.startX + (share.time - car.startTime) * car.xSpeed, car.y, car.length, G)
                 end
             end
 
@@ -71,6 +71,15 @@ function client.draw()
         end)
     else
         love.graphics.print('connecting', 20, 20)
+    end
+end
+
+
+--- UPDATE
+
+function client.update(dt)
+    do -- Time
+        share.time = share.time + dt
     end
 end
 

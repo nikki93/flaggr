@@ -67,6 +67,10 @@ end
 --- UPDATE
 
 function server.update(dt)
+    do -- Time
+        share.time = love.timer.getTime()
+    end
+
     do -- Players
         for clientId, player in pairs(share.players) do
             do -- Walk
@@ -153,28 +157,24 @@ function server.update(dt)
 
                 car.y = spawn.y
                 car.length = spawn.length
+                car.startTime = share.time
                 if spawn.dir == 'right' then
-                    car.x = -car.length
+                    car.startX = -car.length
                     car.xSpeed = spawn.xSpeed
                 end
                 if spawn.dir == 'left' then
-                    car.x = W
+                    car.startX = W
                     car.xSpeed = -spawn.xSpeed
                 end
             end
         end
     end
 
-    do -- Car motion
-        for carId, car in pairs(share.cars) do
-            car.x = car.x + car.xSpeed * dt
-        end
-    end
-
     do -- Collisions
         for clientId, player in pairs(share.players) do
             for carId, car in pairs(share.cars) do
-                if player.x <= car.x + car.length and player.x + G >= car.x and
+                local carX = car.startX + (share.time - car.startTime) * car.xSpeed
+                if player.x <= carX + car.length and player.x + G >= carX and
                     player.y + PLAYER_COL_Y_EPS < car.y + G and player.y + G > car.y + PLAYER_COL_Y_EPS then
                     player.died = true
                 end
