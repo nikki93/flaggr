@@ -6,10 +6,13 @@ cs = require 'cs'
 W, H = 560, 560 -- Game width, game height
 G = 28 -- Grid size
 
+EASINESS = 1
+
 PLAYER_X_SPEED = 250
 PLAYER_Y_SPEED = 320
 PLAYER_KEY_DELAY = 0.04
-PLAYER_COL_Y_EPS = 0.01
+PLAYER_COL_X_EPS = 0.1 * G
+PLAYER_COL_Y_EPS = 0.1 * G
 PLAYER_DEATH_RESET_TIME = 1
 
 BOMB_RADIUS = 2.5 * G
@@ -23,44 +26,44 @@ CAR_SPAWNS = {
     -- Bottom cars
     {
         y = 18 * G,
-        xSpeed = 180,
+        xSpeed = EASINESS * 180,
         dir = 'right',
-        timerMin = 0.8,
-        timerMax = 2,
+        timerMin = (1 / EASINESS) * 0.8,
+        timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
     },
     {
         y = 17 * G,
-        xSpeed = 180,
+        xSpeed = EASINESS * 180,
         dir = 'left',
-        timerMin = 0.8,
-        timerMax = 2,
+        timerMin = (1 / EASINESS) * 0.8,
+        timerMax = (1 / EASINESS) * 2,
         length = 3 * G,
     },
     {
         y = 16 * G,
-        xSpeed = 400,
+        xSpeed = EASINESS * 400,
         dir = 'right',
-        timerMin = 0.8,
-        timerMax = 2,
+        timerMin = (1 / EASINESS) * 0.8,
+        timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
     },
 
     -- Trains
     {
         y = 14 * G,
-        xSpeed = 800,
+        xSpeed = EASINESS * 800,
         dir = 'right',
-        timerMin = 5,
-        timerMax = 8,
+        timerMin = (1 / EASINESS) * 5,
+        timerMax = (1 / EASINESS) * 8,
         length = 20 * G,
     },
     {
         y = 13 * G,
-        xSpeed = 800,
+        xSpeed = EASINESS * 800,
         dir = 'left',
-        timerMin = 5,
-        timerMax = 8,
+        timerMin = (1 / EASINESS) * 5,
+        timerMax = (1 / EASINESS) * 8,
         length = 20 * G,
     },
 }
@@ -75,34 +78,34 @@ WATERS = {
 LOG_SPAWNS = {
     {
         y = 12 * G,
-        xSpeed = 180,
+        xSpeed = EASINESS * 180,
         dir = 'right',
-        timerMin = 0.8,
-        timerMax = 2,
+        timerMin = (1 / EASINESS) * 0.8,
+        timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
     },
     {
         y = 11 * G,
-        xSpeed = 180,
+        xSpeed = EASINESS * 180,
         dir = 'left',
-        timerMin = 0.8,
-        timerMax = 2,
+        timerMin = (1 / EASINESS) * 0.8,
+        timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
     },
     {
         y = 10 * G,
-        xSpeed = 250,
+        xSpeed = EASINESS * 250,
         dir = 'right',
-        timerMin = 0.8,
-        timerMax = 2,
+        timerMin = (1 / EASINESS) * 0.8,
+        timerMax = (1 / EASINESS) * 2,
         length = 2.7 * G,
     },
     {
         y = 9 * G,
-        xSpeed = 250,
+        xSpeed = EASINESS * 250,
         dir = 'left',
-        timerMin = 0.2,
-        timerMax = 0.8,
+        timerMin = (1 / EASINESS) * 0.2,
+        timerMax = (1 / EASINESS) * 0.8,
         length = 1.6 * G,
     },
 }
@@ -210,7 +213,7 @@ function applyLogOverlaps(share, dt)
             player.onLog = false
             for logId, log in pairs(share.logs) do
                 local logX = log.startX + (share.time - log.startTime) * log.xSpeed
-                if player.x <= logX + log.length and player.x + G >= logX and
+                if player.x + PLAYER_COL_X_EPS <= logX + log.length and player.x + G >= logX + PLAYER_COL_X_EPS and
                     player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
                     player.onLog = true
                     local yDiff = math.abs(player.y - log.y)

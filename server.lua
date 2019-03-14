@@ -255,7 +255,7 @@ function server.update(dt)
             if not player.died then
                 for carId, car in pairs(share.cars) do
                     local carX = car.startX + (share.time - car.startTime) * car.xSpeed
-                    if player.x <= carX + car.length and player.x + G >= carX and
+                    if player.x + PLAYER_COL_X_EPS <= carX + car.length and player.x + G >= carX + PLAYER_COL_X_EPS and
                         player.y + PLAYER_COL_Y_EPS < car.y + G and player.y + G > car.y + PLAYER_COL_Y_EPS then
                         player.died = true
                     end
@@ -311,7 +311,7 @@ function server.update(dt)
             local minDistClientId
             for clientId, player in pairs(share.players) do
                 if not player.died then
-                    if player.x <= flagX + FLAG_UNCARRIED_SIZE and player.x + G >= flagX and
+                    if player.x + PLAYER_COL_X_EPS <= flagX + FLAG_UNCARRIED_SIZE and player.x + G >= flagX + PLAYER_COL_X_EPS and
                         player.y + PLAYER_COL_Y_EPS < flagY + FLAG_UNCARRIED_SIZE and player.y + G > flagY + PLAYER_COL_Y_EPS then
                         local dx, dy = player.x - flagX, player.y - flagY
                         local sqDist = dx * dx + dy * dy
