@@ -24,7 +24,7 @@ function drawPlayer(player, x, y, isOwn)
         love.graphics.setColor(0, f, 0)
     end
     if player.team == 'B' then
-        love.graphics.setColor(f, f, 0)
+        love.graphics.setColor(f, f * 0.2, f)
     end
     love.graphics.circle('fill', x + 0.5 * G, y + 0.5 * G, 0.5 * G)
     if isOwn then
@@ -47,7 +47,8 @@ end
 --- DRAW
 
 local deathFont = love.graphics and love.graphics.newFont(36)
-local flagResetFont = love.graphics and love.graphics.newFont(24)
+local scoreFont = love.graphics and love.graphics.newFont(24)
+local instrFont = love.graphics and love.graphics.newFont(20)
 
 function client.draw()
     if client.connected then
@@ -105,7 +106,7 @@ function client.draw()
             end
 
             do -- Flag
-                love.graphics.setColor(1, 0, 1)
+                love.graphics.setColor(0.8, 0.8, 0)
                 if share.flag.carrierClientId then
                     love.graphics.rectangle('fill',
                         share.flag.x - 0.5 * FLAG_CARRIED_SIZE, share.flag.y - 0.5 * FLAG_CARRIED_SIZE,
@@ -145,15 +146,61 @@ function client.draw()
 
             do -- Flag reset message
                 if share.flag.dropTime then
-                    local countDown = tostring(math.max(0, math.floor(FLAG_DROP_RESET_TIME - (share.time - share.flag.dropTime) + 0.999)))
-                    local text = 'FLAG RESET: ' .. countDown
-                    local w, h = flagResetFont:getWidth(text), flagResetFont:getHeight()
+                    local text = tostring(math.max(0, math.floor(FLAG_DROP_RESET_TIME - (share.time - share.flag.dropTime) + 0.999)))
+                    local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
                     love.graphics.stacked('all', function()
-                        love.graphics.setColor(1, 0, 1)
-                        love.graphics.setFont(flagResetFont)
-                        love.graphics.print(text, 0.5 * (W - w), -h - 5)
+                        love.graphics.setColor(0, 0, 0)
+                        love.graphics.setFont(scoreFont)
+                        love.graphics.print(text, share.flag.x + 0.5 * G - 0.5 * w, share.flag.y + 0.5 * G - 0.5 * h)
                     end)
                 end
+            end
+
+            do -- Flag score message
+                local text = 'FLAGS: ' .. share.score.flags.A .. ', ' .. share.score.flags.B
+                local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
+                love.graphics.stacked('all', function()
+                    love.graphics.setFont(scoreFont)
+                    love.graphics.print({
+                        { 1, 1, 1 }, 'FLAGS: ' ,
+                        { 0, 1, 0 }, tostring(share.score.flags.A) ,
+                        { 1, 1, 1 }, ', ' ,
+                        { 1, 0.2, 1 }, tostring(share.score.flags.B) ,
+                    }, 5, -h - 5)
+                end)
+            end
+
+            do -- Game score message
+                local text = 'GAMES: ' .. share.score.games.A .. ', ' .. share.score.games.B
+                local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
+                love.graphics.stacked('all', function()
+                    love.graphics.setFont(scoreFont)
+                    love.graphics.print({
+                        { 1, 1, 1 }, 'GAMES: ' ,
+                        { 0, 1, 0 }, tostring(share.score.games.A) ,
+                        { 1, 1, 1 }, ', ' ,
+                        { 1, 0.2, 1 }, tostring(share.score.games.B) ,
+                    }, W - w - 5, -h - 5)
+                end)
+            end
+
+            do -- Instructions message
+                local text = {
+                    { 1, 1, 1 }, 'Arrows to move, SPACE to bomb\nFetch ',
+                    { 0.8, 0.8, 0 }, 'FLAG',
+                    { 1, 1, 1 }, ', bring it back down to score\nScore ' .. tostring(SCORE_FLAGS_PER_GAME) .. ' flags to win a GAME',
+                }
+                local textCat = ''
+                for _, s in ipairs(text) do
+                    if type(s) == 'string' then
+                        textCat = textCat .. s
+                    end
+                end
+                local w, h = instrFont:getWidth(textCat), instrFont:getHeight()
+                love.graphics.stacked('all', function()
+                    love.graphics.setFont(instrFont)
+                    love.graphics.printf(text, 0.5 * (W - w), H + 10 + deathFont:getHeight() + 5, w, 'center')
+                end)
             end
 
             if DEBUG then -- Debug

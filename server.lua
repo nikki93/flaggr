@@ -369,4 +369,21 @@ function server.update(dt)
             share.flag.x, share.flag.y = carrierPlayer.x, carrierPlayer.y
         end
     end
+
+    do -- Flag scoring
+        if share.flag.carrierClientId then
+            local carrierPlayer = share.players[share.flag.carrierClientId]
+            if carrierPlayer.y + PLAYER_COL_Y_EPS >= H - G then
+                share.score.flags[carrierPlayer.team] = share.score.flags[carrierPlayer.team] + 1
+
+                if share.score.flags[carrierPlayer.team] >= SCORE_FLAGS_PER_GAME then
+                    share.score.games[carrierPlayer.team] = share.score.games[carrierPlayer.team] + 1
+                    share.score.flags.A = 0
+                    share.score.flags.B = 0
+                end
+
+                resetFlag()
+            end
+        end
+    end
 end

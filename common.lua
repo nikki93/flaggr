@@ -22,6 +22,8 @@ FLAG_UNCARRIED_SIZE = G
 FLAG_CARRIED_SIZE = 0.4 * G
 FLAG_DROP_RESET_TIME = 10
 
+SCORE_FLAGS_PER_GAME = 10
+
 CAR_SPAWNS = {
     -- Bottom cars
     {
@@ -110,7 +112,7 @@ LOG_SPAWNS = {
     },
 }
 
-DEBUG = true
+DEBUG = false
 
 
 --- GRAPHICS UTILS
