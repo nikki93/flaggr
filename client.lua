@@ -109,7 +109,7 @@ function client.draw()
             end
 
             do -- Flag
-                love.graphics.setColor(0.8, 0.8, 0)
+                love.graphics.setColor(1, 1, 0)
                 if share.flag.carrierClientId then
                     love.graphics.rectangle('fill',
                         share.flag.x - 0.5 * FLAG_CARRIED_SIZE, share.flag.y - 0.5 * FLAG_CARRIED_SIZE,
@@ -190,7 +190,7 @@ function client.draw()
             if love.timer.getTime() - clientStartTime < INSTRUCTIONS_SHOW_TIME then -- Instructions message
                 local text = {
                     { 1, 1, 1 }, 'Arrows to move, SPACE to bomb\nFetch ',
-                    { 0.8, 0.8, 0 }, 'FLAG',
+                    { 1, 1, 0 }, 'FLAG',
                     { 1, 1, 1 }, ', bring it back down to score\nScore ' .. tostring(SCORE_FLAGS_PER_GAME) .. ' flags to win a GAME!',
                 }
                 local textCat = ''
