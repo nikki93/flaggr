@@ -87,7 +87,7 @@ LOG_SPAWNS = {
         dir = 'right',
         timerMin = 0.8,
         timerMax = 2,
-        length = 2.5 * G,
+        length = 2.7 * G,
     },
     {
         y = 9 * G,
@@ -95,7 +95,7 @@ LOG_SPAWNS = {
         dir = 'left',
         timerMin = 0.2,
         timerMax = 0.8,
-        length = 1.5 * G,
+        length = 1.6 * G,
     },
 }
 
