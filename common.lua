@@ -3,7 +3,7 @@ cs = require 'cs'
 
 --- CONSTANTS
 
-W, H = 560, 840 -- Game width, game height
+W, H = 560, 560 -- Game width, game height
 G = 28 -- Grid size
 
 PLAYER_X_SPEED = 250
@@ -14,7 +14,7 @@ PLAYER_COL_Y_EPS = 0.01
 CAR_SPAWNS = {
     -- Bottom cars
     {
-        y = 26 * G,
+        y = 18 * G,
         xSpeed = 180,
         dir = 'right',
         timerMin = 0.8,
@@ -22,7 +22,7 @@ CAR_SPAWNS = {
         length = 2 * G,
     },
     {
-        y = 25 * G,
+        y = 17 * G,
         xSpeed = 180,
         dir = 'left',
         timerMin = 0.8,
@@ -30,7 +30,7 @@ CAR_SPAWNS = {
         length = 3 * G,
     },
     {
-        y = 24 * G,
+        y = 16 * G,
         xSpeed = 400,
         dir = 'right',
         timerMin = 0.8,
@@ -40,7 +40,7 @@ CAR_SPAWNS = {
 
     -- Trains
     {
-        y = 20 * G,
+        y = 13 * G,
         xSpeed = 800,
         dir = 'right',
         timerMin = 5,
@@ -48,7 +48,7 @@ CAR_SPAWNS = {
         length = 20 * G,
     },
     {
-        y = 19 * G,
+        y = 12 * G,
         xSpeed = 800,
         dir = 'left',
         timerMin = 5,

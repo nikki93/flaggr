@@ -27,7 +27,7 @@ end
 
 function resetPlayer(player)
     player.died = false
-    player.y = H - 2 * G
+    player.y = H - G
     player.x = (W - G) * math.random()
     player.yDir = 'none' -- 'up', 'down' or 'none' depending on current Y stepping direction
 end
