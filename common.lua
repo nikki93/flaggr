@@ -40,7 +40,7 @@ CAR_SPAWNS = {
 
     -- Trains
     {
-        y = 13 * G,
+        y = 14 * G,
         xSpeed = 800,
         dir = 'right',
         timerMin = 5,
@@ -48,12 +48,54 @@ CAR_SPAWNS = {
         length = 20 * G,
     },
     {
-        y = 12 * G,
+        y = 13 * G,
         xSpeed = 800,
         dir = 'left',
         timerMin = 5,
         timerMax = 8,
         length = 20 * G,
+    },
+}
+
+WATERS = {
+    {
+        minY = 9 * G,
+        maxY = 13 * G,
+    },
+}
+
+LOG_SPAWNS = {
+    {
+        y = 12 * G,
+        xSpeed = 180,
+        dir = 'right',
+        timerMin = 0.8,
+        timerMax = 2,
+        length = 2 * G,
+    },
+    {
+        y = 11 * G,
+        xSpeed = 180,
+        dir = 'left',
+        timerMin = 0.8,
+        timerMax = 2,
+        length = 2 * G,
+    },
+    {
+        y = 10 * G,
+        xSpeed = 250,
+        dir = 'right',
+        timerMin = 0.8,
+        timerMax = 2,
+        length = 2.5 * G,
+    },
+    {
+        y = 9 * G,
+        xSpeed = 250,
+        dir = 'left',
+        timerMin = 0.2,
+        timerMax = 0.8,
+        length = 1.5 * G,
     },
 }
 

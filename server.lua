@@ -30,6 +30,7 @@ function resetPlayer(player)
     player.y = H - G
     player.x = (W - G) * math.random()
     player.yDir = 'none' -- 'up', 'down' or 'none' depending on current Y stepping direction
+    player.onLog = false
 end
 
 
@@ -46,6 +47,14 @@ function server.load()
 
     do -- Cars
         share.cars = {}
+    end
+
+    do -- Waters
+        share.waters = WATERS
+    end
+
+    do -- Logs
+        share.logs = {}
     end
 end
 
@@ -128,12 +137,74 @@ function server.update(dt)
         end
     end
 
-    do -- Collisions
+    do -- Log spawns
+        for i, spawn in ipairs(LOG_SPAWNS) do
+            -- Reset timer?
+            if not spawn.timer then
+                spawn.timer = spawn.timerMin + (spawn.timerMax - spawn.timerMin) * math.random()
+            end
+
+            -- Tick the timer!
+            spawn.timer = spawn.timer - dt
+
+            -- Timer fired? Spawn a log!
+            if spawn.timer <= 0 then
+                spawn.timer = nil
+
+                local id = genId()
+                share.logs[id] = {}
+                local log = share.logs[id]
+
+                log.y = spawn.y
+                log.length = spawn.length
+                log.startTime = share.time
+                if spawn.dir == 'right' then
+                    log.startX = -log.length
+                    log.xSpeed = spawn.xSpeed
+                end
+                if spawn.dir == 'left' then
+                    log.startX = W
+                    log.xSpeed = -spawn.xSpeed
+                end
+            end
+        end
+    end
+
+    do -- Car collisions
         for clientId, player in pairs(share.players) do
             for carId, car in pairs(share.cars) do
                 local carX = car.startX + (share.time - car.startTime) * car.xSpeed
                 if player.x <= carX + car.length and player.x + G >= carX and
                     player.y + PLAYER_COL_Y_EPS < car.y + G and player.y + G > car.y + PLAYER_COL_Y_EPS then
+                    player.died = true
+                end
+            end
+        end
+    end
+
+    do -- Log overlap
+        for clientId, player in pairs(share.players) do
+            local moved = false
+            player.onLog = false
+            for logId, log in pairs(share.logs) do
+                local logX = log.startX + (share.time - log.startTime) * log.xSpeed
+                if player.x <= logX + log.length and player.x + G >= logX and
+                    player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
+                    player.onLog = true
+                    if not moved and math.abs(player.y - log.y) < 0.5 then
+                        player.x = player.x + log.xSpeed * dt
+                        player.x = math.max(0, math.min(player.x, W - G))
+                        moved = true
+                    end
+                end
+            end
+        end
+    end
+
+    do -- Water drown
+        for clientId, player in pairs(share.players) do
+            for waterId, water in pairs(share.waters) do
+                if not player.onLog and player.y + PLAYER_COL_Y_EPS < water.maxY and player.y + G > water.minY + PLAYER_COL_Y_EPS then
                     player.died = true
                 end
             end

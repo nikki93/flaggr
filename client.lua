@@ -37,10 +37,17 @@ function client.draw()
                 love.graphics.translate(dx, dy)
             end
 
-            do -- Players
-                for clientId, player in pairs(share.players) do
-                    love.graphics.setColor(0, 1, 0)
-                    love.graphics.rectangle('fill', player.x, player.y, G, G)
+            do -- Waters
+                for _, water in pairs(share.waters) do
+                    love.graphics.setColor(0, 0, 1)
+                    love.graphics.rectangle('fill', 0, water.minY, W, water.maxY - water.minY)
+                end
+            end
+
+            do -- Logs
+                for logId, log in pairs(share.logs) do
+                    love.graphics.setColor(0.65, 0.16, 0.16)
+                    love.graphics.rectangle('fill', log.startX + (share.time - log.startTime) * log.xSpeed, log.y, log.length, G)
                 end
             end
 
@@ -48,6 +55,13 @@ function client.draw()
                 for carId, car in pairs(share.cars) do
                     love.graphics.setColor(1, 0, 0)
                     love.graphics.rectangle('fill', car.startX + (share.time - car.startTime) * car.xSpeed, car.y, car.length, G)
+                end
+            end
+
+            do -- Players
+                for clientId, player in pairs(share.players) do
+                    love.graphics.setColor(0, 1, 0)
+                    love.graphics.rectangle('fill', player.x, player.y, G, G)
                 end
             end
 
