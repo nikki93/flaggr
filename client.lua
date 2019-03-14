@@ -84,7 +84,7 @@ function client.update(dt)
         end
 
         do -- Our player
-            playerApplyWalk(share.players[client.id], dt)
+            -- playerApplyWalk(share.players[client.id], dt)
         end
     end
 end
