@@ -16,6 +16,25 @@ local share = client.share
 local home = client.home
 
 
+--- UTIL
+
+function drawPlayer(player, x, y, isOwn)
+    local f = player.died and 0.4 or 1
+    if player.team == 'A' then
+        love.graphics.setColor(0, f, 0)
+    end
+    if player.team == 'B' then
+        love.graphics.setColor(f, f, 0)
+    end
+    love.graphics.circle('fill', x + 0.5 * G, y + 0.5 * G, 0.5 * G)
+    if isOwn then
+        love.graphics.setLineWidth(2)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.circle('line', x + 0.5 * G, y + 0.5 * G, 0.5 * G - 1)
+    end
+end
+
+
 --- CONNECT
 
 function client.connect()
@@ -50,8 +69,7 @@ function client.draw()
             do -- Dead players
                 for clientId, player in pairs(share.players) do
                     if player.died then
-                        love.graphics.setColor(0.4, 0.4, 0.4)
-                        love.graphics.rectangle('fill', player.x, player.y, G, G)
+                        drawPlayer(player, player.x, player.y, clientId == client.id)
                     end
                 end
             end
@@ -81,8 +99,7 @@ function client.draw()
                         if player.ySetTime and player.vy then
                             y = player.y + math.max(0, share.time - halfPing - player.ySetTime) * player.vy
                         end
-                        love.graphics.setColor(0, 1, 0)
-                        love.graphics.rectangle('fill', x, y, G, G)
+                        drawPlayer(player, x, y, clientId == client.id)
                     end
                 end
             end

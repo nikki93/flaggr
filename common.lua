@@ -6,7 +6,7 @@ cs = require 'cs'
 W, H = 560, 560 -- Game width, game height
 G = 28 -- Grid size
 
-EASINESS = 1
+EASINESS = 0.92
 
 PLAYER_X_SPEED = 250
 PLAYER_Y_SPEED = 320
@@ -131,7 +131,7 @@ end
 
 --- COMMON LOGIC
 
-function playerApplyWalk(share, player, dt)
+function applyPlayerWalk(share, player, dt)
     if player.died then
         return
     end

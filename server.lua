@@ -83,6 +83,19 @@ function server.load()
         share.flag = {}
         resetFlag()
     end
+
+    do -- Score
+        share.score = {
+            flags = {
+                A = 0,
+                B = 0,
+            },
+            games = {
+                A = 0,
+                B = 0,
+            },
+        }
+    end
 end
 
 
@@ -90,8 +103,27 @@ end
 
 function server.connect(clientId)
     do -- New player
+        local team
+        do -- Pick team
+            local nPlayers = { A = 0, B = 0 }
+            for clientId, player in pairs(share.players) do
+                nPlayers[player.team] = nPlayers[player.team] + 1
+            end
+            if nPlayers.A > nPlayers.B then
+                team = 'B'
+            end
+            if nPlayers.A < nPlayers.B then
+                team = 'A'
+            end
+            if nPlayers.A == nPlayers.B then
+                team = math.random() <= 0.5 and 'A' or 'B'
+            end
+        end
+
         share.players[clientId] = {}
         local player = share.players[clientId]
+        player.team = team
+
         resetPlayer(player)
     end
 end
@@ -179,7 +211,7 @@ function server.update(dt)
                         player.yDir = 'down'
                     end
                 end
-                playerApplyWalk(share, player, dt)
+                applyPlayerWalk(share, player, dt)
             end
         end
     end
