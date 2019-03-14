@@ -82,6 +82,10 @@ function client.update(dt)
         do -- Time
             share.time = share.time + dt
         end
+
+        do -- Our player
+            playerApplyWalk(share.players[client.id], dt)
+        end
     end
 end
 

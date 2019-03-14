@@ -388,31 +388,31 @@ local loveCbs = {
     joystickremoved = { client = true },
 }
 
-local firing = true
+local firing = 1
 
 for cbName, where in pairs(loveCbs) do
     love[cbName] = function(...)
         if where.server and server.enabled then
-            if firing and cbName == 'update' then
+            if (firing == 1) and cbName == 'update' then
                 server.preupdate(...)
             end
             local serverCb = server[cbName]
             if serverCb then
                 serverCb(...)
             end
-            if firing and cbName == 'update' then
+            if (firing == 1) and cbName == 'update' then
                 server.postupdate(...)
             end
         end
         if where.client and client.enabled then
-            if firing and cbName == 'update' then
+            if (firing == 1) and cbName == 'update' then
                 client.preupdate(...)
             end
             local clientCb = client[cbName]
             if clientCb then
                 clientCb(...)
             end
-            if firing and cbName == 'update' then
+            if (firing == 1) and cbName == 'update' then
                 client.postupdate(...)
             end
             if cbName == 'quit' and client.connected then
@@ -420,7 +420,7 @@ for cbName, where in pairs(loveCbs) do
             end
         end
         if cbName == 'update' then
-            firing = not firing
+            firing = (firing + 1) % 3
         end
     end
 end
