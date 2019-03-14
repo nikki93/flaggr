@@ -31,7 +31,22 @@ function resetPlayer(player)
     player.x = (W - G) * math.random()
     player.yDir = 'none' -- 'up', 'down' or 'none' depending on current Y stepping direction
     player.onLog = false
-    player.deathCountdown = -1
+    player.deathTime = nil
+    player.carrying = false -- Whether carrying flag
+end
+
+function dropFlag()
+    share.flag.carrierClientId = nil
+    share.flag.dropTime = share.time
+    share.flag.x = math.max(0, math.min(share.flag.x, W - FLAG_UNCARRIED_SIZE))
+    share.flag.y = math.max(0, math.min(share.flag.y, H - FLAG_UNCARRIED_SIZE))
+end
+
+function resetFlag()
+    share.flag.x = 0.5 * (W - FLAG_UNCARRIED_SIZE)
+    share.flag.y = 0
+    share.flag.carrierClientId = nil
+    share.flag.dropTime = nil -- `share.time` when flag was droppped, watch to reset
 end
 
 
@@ -61,6 +76,11 @@ function server.load()
     do -- Bombs
         share.bombs = {}
     end
+
+    do -- Flag
+        share.flag = {}
+        resetFlag()
+    end
 end
 
 
@@ -79,6 +99,10 @@ end
 
 function server.disconnect(clientId)
     do -- Remove player
+        local player = share.players[clientId]
+        if player.carrying then
+            dropFlag()
+        end
         share.players[clientId] = nil
     end
 end
@@ -280,17 +304,58 @@ function server.update(dt)
     do -- Death
         for clientId, player in pairs(share.players) do
             if player.died then
-                if player.deathCountdown < 0 then
-                    player.deathCountdown = 1
-                else
-                    if player.deathCountdown > 0 then
-                        player.deathCountdown = player.deathCountdown - dt
+                if not player.deathTime then -- New death!
+                    player.deathTime = share.time
+                    if player.carrying then -- Flag drop
+                        player.carrying = false
+                        dropFlag()
                     end
-                    if player.deathCountdown <= 0 then
-                        resetPlayer(player)
+                elseif share.time - player.deathTime >= 1 then
+                    resetPlayer(player)
+                end
+            end
+        end
+    end
+
+    do -- Flag reset
+        if not share.flag.carrierClientId and share.flag.dropTime then
+            if share.time - share.flag.dropTime >= FLAG_DROP_RESET_TIME then
+                resetFlag()
+            end
+        end
+    end
+
+    do -- Flag pickup
+        if not share.flag.carrierClientId then
+            local flagX, flagY = share.flag.x, share.flag.y
+            local minSqDist
+            local minDistClientId
+            for clientId, player in pairs(share.players) do
+                if not player.died then
+                    if player.x <= flagX + FLAG_UNCARRIED_SIZE and player.x + G >= flagX and
+                        player.y + PLAYER_COL_Y_EPS < flagY + FLAG_UNCARRIED_SIZE and player.y + G > flagY + PLAYER_COL_Y_EPS then
+                        local dx, dy = player.x - flagX, player.y - flagY
+                        local sqDist = dx * dx + dy * dy
+                        if not minSqDist or sqDist < minSqDist then
+                            minSqDist = sqDist
+                            minDistClientId = clientId
+                        end
                     end
                 end
             end
+            if minSqDist then
+                local carrierPlayer = share.players[minDistClientId]
+                carrierPlayer.carrying = true
+                resetFlag()
+                share.flag.carrierClientId = minDistClientId
+            end
+        end
+    end
+
+    do -- Flag carry
+        if share.flag.carrierClientId then
+            local carrierPlayer = share.players[share.flag.carrierClientId]
+            share.flag.x, share.flag.y = carrierPlayer.x, carrierPlayer.y
         end
     end
 end

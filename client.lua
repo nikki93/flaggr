@@ -27,7 +27,8 @@ end
 
 --- DRAW
 
-local bigFont = love.graphics and love.graphics.newFont(36)
+local deathFont = love.graphics and love.graphics.newFont(36)
+local flagResetFont = love.graphics and love.graphics.newFont(24)
 
 function client.draw()
     if client.connected then
@@ -49,7 +50,7 @@ function client.draw()
             do -- Dead players
                 for clientId, player in pairs(share.players) do
                     if player.died then
-                        love.graphics.setColor(0, 1, 0)
+                        love.graphics.setColor(0.4, 0.4, 0.4)
                         love.graphics.rectangle('fill', player.x, player.y, G, G)
                     end
                 end
@@ -78,6 +79,17 @@ function client.draw()
                 end
             end
 
+            do -- Flag
+                love.graphics.setColor(1, 0, 1)
+                if share.flag.carrierClientId then
+                    love.graphics.rectangle('fill',
+                        share.flag.x - 0.5 * FLAG_CARRIED_SIZE, share.flag.y - 0.5 * FLAG_CARRIED_SIZE,
+                        FLAG_CARRIED_SIZE, FLAG_CARRIED_SIZE)
+                else
+                    love.graphics.rectangle('fill', share.flag.x, share.flag.y, FLAG_UNCARRIED_SIZE, FLAG_UNCARRIED_SIZE)
+                end
+            end
+
             do -- Bombs
                 for bombId, bomb in pairs(share.bombs) do
                     love.graphics.setColor(1, 1, 0)
@@ -96,12 +108,25 @@ function client.draw()
 
             do -- Death message
                 local myPlayer = share.players[client.id]
-                if myPlayer.died and myPlayer.deathCountdown > 0 then
-                    local text = 'Died! Wait...'
-                    local w, h = bigFont:getWidth(text), bigFont:getHeight()
+                if myPlayer.died then
+                    local text = 'DIED, WAIT...'
+                    local w, h = deathFont:getWidth(text), deathFont:getHeight()
                     love.graphics.stacked('all', function()
-                        love.graphics.setFont(bigFont)
+                        love.graphics.setFont(deathFont)
                         love.graphics.print(text, 0.5 * (W - w), H + 5)
+                    end)
+                end
+            end
+
+            do -- Flag reset message
+                if share.flag.dropTime then
+                    local countDown = tostring(math.max(0, math.floor(FLAG_DROP_RESET_TIME - (share.time - share.flag.dropTime) + 0.999)))
+                    local text = 'FLAG RESET: ' .. countDown
+                    local w, h = flagResetFont:getWidth(text), flagResetFont:getHeight()
+                    love.graphics.stacked('all', function()
+                        love.graphics.setColor(1, 0, 1)
+                        love.graphics.setFont(flagResetFont)
+                        love.graphics.print(text, 0.5 * (W - w), -h - 5)
                     end)
                 end
             end

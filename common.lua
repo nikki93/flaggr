@@ -10,9 +10,14 @@ PLAYER_X_SPEED = 250
 PLAYER_Y_SPEED = 320
 PLAYER_KEY_DELAY = 0.04
 PLAYER_COL_Y_EPS = 0.01
+PLAYER_DEATH_RESET_TIME = 1
 
 BOMB_RADIUS = 2.5 * G
 BOMB_DRAW_TIME = 0.2
+
+FLAG_UNCARRIED_SIZE = G
+FLAG_CARRIED_SIZE = 0.4 * G
+FLAG_DROP_RESET_TIME = 10
 
 CAR_SPAWNS = {
     -- Bottom cars
@@ -121,10 +126,10 @@ if love.graphics then
 end
 
 
---- LOGIC
+--- COMMON LOGIC
 
 function playerApplyWalk(player, dt)
-    if player.deathCountdown > 0 then
+    if player.died then
         return
     end
 
