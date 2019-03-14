@@ -420,7 +420,7 @@ for cbName, where in pairs(loveCbs) do
             end
         end
         if cbName == 'update' then
-            firing = (firing + 1) % 6
+            firing = (firing + 1) % 2
         end
     end
 end
