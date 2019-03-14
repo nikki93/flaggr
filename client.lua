@@ -48,9 +48,9 @@ end
 
 --- DRAW
 
-local deathFont = love.graphics and love.graphics.newFont(36)
-local scoreFont = love.graphics and love.graphics.newFont(24)
-local instrFont = love.graphics and love.graphics.newFont(20)
+local deathFont = love.graphics and love.graphics.newFont('font.ttf', 36)
+local scoreFont = love.graphics and love.graphics.newFont('font.ttf', 24)
+local instrFont = love.graphics and love.graphics.newFont('font.ttf', 20)
 
 function client.draw()
     if client.connected then
@@ -190,7 +190,7 @@ function client.draw()
                 local text = {
                     { 1, 1, 1 }, 'Arrows to move, SPACE to bomb\nFetch ',
                     { 0.8, 0.8, 0 }, 'FLAG',
-                    { 1, 1, 1 }, ', bring it back down to score\nScore ' .. tostring(SCORE_FLAGS_PER_GAME) .. ' flags to win a GAME',
+                    { 1, 1, 1 }, ', bring it back down to score\nScore ' .. tostring(SCORE_FLAGS_PER_GAME) .. ' flags to win a GAME!',
                 }
                 local textCat = ''
                 for _, s in ipairs(text) do
