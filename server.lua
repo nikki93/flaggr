@@ -141,9 +141,9 @@ function server.update(dt)
         share.time = love.timer.getTime()
     end
 
-    do -- Players
+    do -- Player walks
         for clientId, player in pairs(share.players) do
-            do -- Walk
+            if not player.died then
                 local walk = homes[clientId].walk
                 player.walk = walk
                 if walk then
@@ -227,11 +227,13 @@ function server.update(dt)
 
     do -- Car collisions
         for clientId, player in pairs(share.players) do
-            for carId, car in pairs(share.cars) do
-                local carX = car.startX + (share.time - car.startTime) * car.xSpeed
-                if player.x <= carX + car.length and player.x + G >= carX and
-                    player.y + PLAYER_COL_Y_EPS < car.y + G and player.y + G > car.y + PLAYER_COL_Y_EPS then
-                    player.died = true
+            if not player.died then
+                for carId, car in pairs(share.cars) do
+                    local carX = car.startX + (share.time - car.startTime) * car.xSpeed
+                    if player.x <= carX + car.length and player.x + G >= carX and
+                        player.y + PLAYER_COL_Y_EPS < car.y + G and player.y + G > car.y + PLAYER_COL_Y_EPS then
+                        player.died = true
+                    end
                 end
             end
         end
@@ -239,33 +241,37 @@ function server.update(dt)
 
     do -- Log overlap
         for clientId, player in pairs(share.players) do
-            local minYDiff
-            local minYDiffXSpeed
-            player.onLog = false
-            for logId, log in pairs(share.logs) do
-                local logX = log.startX + (share.time - log.startTime) * log.xSpeed
-                if player.x <= logX + log.length and player.x + G >= logX and
-                    player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
-                    player.onLog = true
-                    local yDiff = math.abs(player.y - log.y)
-                    if not minYDiff or yDiff < minYDiff then
-                        minYDiff = yDiff
-                        minYDiffXSpeed = log.xSpeed
+            if not player.died then
+                local minYDiff
+                local minYDiffXSpeed
+                player.onLog = false
+                for logId, log in pairs(share.logs) do
+                    local logX = log.startX + (share.time - log.startTime) * log.xSpeed
+                    if player.x <= logX + log.length and player.x + G >= logX and
+                        player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
+                        player.onLog = true
+                        local yDiff = math.abs(player.y - log.y)
+                        if not minYDiff or yDiff < minYDiff then
+                            minYDiff = yDiff
+                            minYDiffXSpeed = log.xSpeed
+                        end
                     end
                 end
-            end
-            if minYDiffXSpeed then
-                player.x = player.x + minYDiffXSpeed * dt
-                player.x = math.max(0, math.min(player.x, W - G))
+                if minYDiffXSpeed then
+                    player.x = player.x + minYDiffXSpeed * dt
+                    player.x = math.max(0, math.min(player.x, W - G))
+                end
             end
         end
     end
 
     do -- Water drown
         for clientId, player in pairs(share.players) do
-            for waterId, water in pairs(share.waters) do
-                if not player.onLog and player.y + PLAYER_COL_Y_EPS < water.maxY and player.y + G > water.minY + PLAYER_COL_Y_EPS then
-                    player.died = true
+            if not player.died then
+                for waterId, water in pairs(share.waters) do
+                    if not player.onLog and player.y + PLAYER_COL_Y_EPS < water.maxY and player.y + G > water.minY + PLAYER_COL_Y_EPS then
+                        player.died = true
+                    end
                 end
             end
         end
@@ -276,7 +282,6 @@ function server.update(dt)
             if player.died then
                 if player.deathCountdown < 0 then
                     player.deathCountdown = 1
-                    player.x, player.y = -2000, -2000
                 else
                     if player.deathCountdown > 0 then
                         player.deathCountdown = player.deathCountdown - dt

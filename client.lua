@@ -46,6 +46,15 @@ function client.draw()
                 end
             end
 
+            do -- Dead players
+                for clientId, player in pairs(share.players) do
+                    if player.died then
+                        love.graphics.setColor(0, 1, 0)
+                        love.graphics.rectangle('fill', player.x, player.y, G, G)
+                    end
+                end
+            end
+
             do -- Logs
                 for logId, log in pairs(share.logs) do
                     love.graphics.setColor(0.65, 0.16, 0.16)
@@ -60,10 +69,12 @@ function client.draw()
                 end
             end
 
-            do -- Players
+            do -- Alive players
                 for clientId, player in pairs(share.players) do
-                    love.graphics.setColor(0, 1, 0)
-                    love.graphics.rectangle('fill', player.x, player.y, G, G)
+                    if not player.died then
+                        love.graphics.setColor(0, 1, 0)
+                        love.graphics.rectangle('fill', player.x, player.y, G, G)
+                    end
                 end
             end
 
