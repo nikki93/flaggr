@@ -90,6 +90,15 @@ function client.update(dt)
 end
 
 
+--- CHANGING
+
+function client.changing(diff)
+    if diff.time and share.time then -- Make sure time only goes forward
+        diff.time = math.max(share.time, diff.time)
+    end
+end
+
+
 --- KEYBOARD
 
 function client.keypressed(key)
