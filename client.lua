@@ -27,6 +27,8 @@ end
 
 --- DRAW
 
+local bigFont = love.graphics.newFont(36)
+
 function client.draw()
     if client.connected then
         love.graphics.stacked('all', function()
@@ -72,6 +74,18 @@ function client.draw()
             end
 
             love.graphics.setScissor()
+
+            do -- Death message
+                local myPlayer = share.players[client.id]
+                if myPlayer.died and myPlayer.deathCountdown > 0 then
+                    local text = 'Died! Wait...'
+                    local w, h = bigFont:getWidth(text), bigFont:getHeight()
+                    love.graphics.stacked('all', function()
+                        love.graphics.setFont(bigFont)
+                        love.graphics.print(text, 0.5 * (W - w), H + 5)
+                    end)
+                end
+            end
 
             if DEBUG then -- Debug
                 love.graphics.setLineWidth(1)

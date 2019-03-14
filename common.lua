@@ -121,6 +121,10 @@ end
 --- LOGIC
 
 function playerApplyWalk(player, dt)
+    if player.deathCountdown > 0 then
+        return
+    end
+
     walk = player.walk
     if not walk then
         return

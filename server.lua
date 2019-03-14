@@ -31,6 +31,7 @@ function resetPlayer(player)
     player.x = (W - G) * math.random()
     player.yDir = 'none' -- 'up', 'down' or 'none' depending on current Y stepping direction
     player.onLog = false
+    player.deathCountdown = -1
 end
 
 
@@ -184,19 +185,24 @@ function server.update(dt)
 
     do -- Log overlap
         for clientId, player in pairs(share.players) do
-            local moved = false
+            local minYDiff
+            local minYDiffXSpeed
             player.onLog = false
             for logId, log in pairs(share.logs) do
                 local logX = log.startX + (share.time - log.startTime) * log.xSpeed
                 if player.x <= logX + log.length and player.x + G >= logX and
                     player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
                     player.onLog = true
-                    if not moved and math.abs(player.y - log.y) < 0.5 then
-                        player.x = player.x + log.xSpeed * dt
-                        player.x = math.max(0, math.min(player.x, W - G))
-                        moved = true
+                    local yDiff = math.abs(player.y - log.y)
+                    if not minYDiff or yDiff < minYDiff then
+                        minYDiff = yDiff
+                        minYDiffXSpeed = log.xSpeed
                     end
                 end
+            end
+            if minYDiffXSpeed then
+                player.x = player.x + minYDiffXSpeed * dt
+                player.x = math.max(0, math.min(player.x, W - G))
             end
         end
     end
@@ -214,7 +220,17 @@ function server.update(dt)
     do -- Death
         for clientId, player in pairs(share.players) do
             if player.died then
-                resetPlayer(player)
+                if player.deathCountdown < 0 then
+                    player.deathCountdown = 1
+                    player.x, player.y = -2000, -2000
+                else
+                    if player.deathCountdown > 0 then
+                        player.deathCountdown = player.deathCountdown - dt
+                    end
+                    if player.deathCountdown <= 0 then
+                        resetPlayer(player)
+                    end
+                end
             end
         end
     end
