@@ -27,7 +27,7 @@ end
 
 --- DRAW
 
-local bigFont = love.graphics.newFont(36)
+local bigFont = love.graphics and love.graphics.newFont(36)
 
 function client.draw()
     if client.connected then
