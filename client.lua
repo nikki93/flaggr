@@ -67,6 +67,14 @@ function client.draw()
                 end
             end
 
+            do -- Bombs
+                for bombId, bomb in pairs(share.bombs) do
+                    love.graphics.setColor(1, 1, 0)
+                    local r = BOMB_RADIUS * math.max(0, 1 - (share.time - bomb.startTime) / BOMB_DRAW_TIME)
+                    love.graphics.circle('fill', bomb.x, bomb.y, r, r)
+                end
+            end
+
             do -- Border
                 love.graphics.setColor(1, 1, 1)
                 love.graphics.setLineWidth(6)
@@ -140,6 +148,10 @@ function client.keypressed(key)
         end
         if key == 'down' then
             home.walk.down = true
+        end
+
+        if key == 'space' then
+            client.send('bomb')
         end
     end
 end

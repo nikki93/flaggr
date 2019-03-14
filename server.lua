@@ -57,6 +57,10 @@ function server.load()
     do -- Logs
         share.logs = {}
     end
+
+    do -- Bombs
+        share.bombs = {}
+    end
 end
 
 
@@ -76,6 +80,56 @@ end
 function server.disconnect(clientId)
     do -- Remove player
         share.players[clientId] = nil
+    end
+end
+
+
+--- RECEIVE
+
+function server.receive(clientId, msg)
+    local player = share.players[clientId]
+    do -- Bomb
+        if msg == 'bomb' and player and not player.died then
+            player.died = true
+
+            local id = genId()
+            share.bombs[id] = {}
+            local bomb = share.bombs[id]
+
+            bomb.x, bomb.y = player.x + 0.5 * G, player.y + 0.5 * G
+            bomb.startTime = share.time
+
+            for carId, car in pairs(share.cars) do
+                local carX = car.startX + (share.time - car.startTime) * car.xSpeed
+                local x = math.max(carX, math.min(bomb.x, carX + car.length))
+                local y = math.max(car.y, math.min(bomb.y, car.y + G))
+                local dx, dy = bomb.x - x, bomb.y - y
+                if dx * dx + dy * dy < BOMB_RADIUS * BOMB_RADIUS then
+                    share.cars[carId] = nil
+                end
+            end
+
+            for logId, log in pairs(share.logs) do
+                local logX = log.startX + (share.time - log.startTime) * log.xSpeed
+                local x = math.max(logX, math.min(bomb.x, logX + log.length))
+                local y = math.max(log.y, math.min(bomb.y, log.y + G))
+                local dx, dy = bomb.x - x, bomb.y - y
+                if dx * dx + dy * dy < BOMB_RADIUS * BOMB_RADIUS then
+                    share.logs[logId] = nil
+                end
+            end
+
+            for playerId, player2 in pairs(share.players) do
+                if not player2.died then
+                    local x = math.max(player2.x, math.min(bomb.x, player2.x + G))
+                    local y = math.max(player2.y, math.min(bomb.y, player2.y + G))
+                    local dx, dy = bomb.x - x, bomb.y - y
+                    if dx * dx + dy * dy < BOMB_RADIUS * BOMB_RADIUS then
+                        player2.died = true
+                    end
+                end
+            end
+        end
     end
 end
 
