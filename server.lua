@@ -33,6 +33,8 @@ function resetPlayer(player)
     player.onLog = false
     player.deathTime = nil
     player.carrying = false -- Whether carrying flag
+    player.vx, player.vy = 0, 0
+    player.xSetTime, player.ySetTime = nil, nil
 end
 
 function dropFlag()
@@ -123,6 +125,7 @@ function server.receive(clientId, msg)
             bomb.x, bomb.y = player.x + 0.5 * G, player.y + 0.5 * G
             bomb.startTime = share.time
 
+            -- Destroy nearby cars, logs, players
             for carId, car in pairs(share.cars) do
                 local carX = car.startX + (share.time - car.startTime) * car.xSpeed
                 local x = math.max(carX, math.min(bomb.x, carX + car.length))
@@ -132,7 +135,6 @@ function server.receive(clientId, msg)
                     share.cars[carId] = nil
                 end
             end
-
             for logId, log in pairs(share.logs) do
                 local logX = log.startX + (share.time - log.startTime) * log.xSpeed
                 local x = math.max(logX, math.min(bomb.x, logX + log.length))
@@ -142,7 +144,6 @@ function server.receive(clientId, msg)
                     share.logs[logId] = nil
                 end
             end
-
             for playerId, player2 in pairs(share.players) do
                 if not player2.died then
                     local x = math.max(player2.x, math.min(bomb.x, player2.x + G))
@@ -178,7 +179,7 @@ function server.update(dt)
                         player.yDir = 'down'
                     end
                 end
-                playerApplyWalk(player, dt)
+                playerApplyWalk(share, player, dt)
             end
         end
     end
@@ -264,29 +265,7 @@ function server.update(dt)
     end
 
     do -- Log overlap
-        for clientId, player in pairs(share.players) do
-            if not player.died then
-                local minYDiff
-                local minYDiffXSpeed
-                player.onLog = false
-                for logId, log in pairs(share.logs) do
-                    local logX = log.startX + (share.time - log.startTime) * log.xSpeed
-                    if player.x <= logX + log.length and player.x + G >= logX and
-                        player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
-                        player.onLog = true
-                        local yDiff = math.abs(player.y - log.y)
-                        if not minYDiff or yDiff < minYDiff then
-                            minYDiff = yDiff
-                            minYDiffXSpeed = log.xSpeed
-                        end
-                    end
-                end
-                if minYDiffXSpeed then
-                    player.x = player.x + minYDiffXSpeed * dt
-                    player.x = math.max(0, math.min(player.x, W - G))
-                end
-            end
-        end
+        applyLogOverlaps(share, dt)
     end
 
     do -- Water drown

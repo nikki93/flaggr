@@ -128,7 +128,7 @@ end
 
 --- COMMON LOGIC
 
-function playerApplyWalk(player, dt)
+function playerApplyWalk(share, player, dt)
     if player.died then
         return
     end
@@ -138,7 +138,9 @@ function playerApplyWalk(player, dt)
         return
     end
 
-    do -- X
+    local oldX, oldY = player.x, player.y
+
+    do -- x
         local vx = 0
         if walk.left then
             vx = vx - PLAYER_X_SPEED
@@ -150,7 +152,7 @@ function playerApplyWalk(player, dt)
         player.x = math.max(0, math.min(player.x, W - G))
     end
 
-    do -- Y
+    do -- y
         if player.yDir ~= 'none' then -- Y stepping
             if player.yDir == 'up' then
                 local prevStep = math.floor(player.y / G + 0.9999) -- Which grid step were we at?
@@ -184,6 +186,43 @@ function playerApplyWalk(player, dt)
                 if player.yDir <= 0 then
                     player.yDir = 'none'
                 end
+            end
+        end
+    end
+
+    do -- vx, vy
+        player.vx = (player.x - oldX) / dt
+        if player.vx ~= 0 then
+            player.xSetTime = share.time
+        end
+        player.vy = (player.y - oldY) / dt
+        if player.vy ~= 0 then
+            player.ySetTime = share.time
+        end
+    end
+end
+
+function applyLogOverlaps(share, dt)
+    for clientId, player in pairs(share.players) do
+        if not player.died then
+            local minYDiff
+            local minYDiffXSpeed
+            player.onLog = false
+            for logId, log in pairs(share.logs) do
+                local logX = log.startX + (share.time - log.startTime) * log.xSpeed
+                if player.x <= logX + log.length and player.x + G >= logX and
+                    player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
+                    player.onLog = true
+                    local yDiff = math.abs(player.y - log.y)
+                    if not minYDiff or yDiff < minYDiff then
+                        minYDiff = yDiff
+                        minYDiffXSpeed = log.xSpeed
+                    end
+                end
+            end
+            if minYDiffXSpeed then
+                player.x = player.x + minYDiffXSpeed * dt
+                player.x = math.max(0, math.min(player.x, W - G))
             end
         end
     end

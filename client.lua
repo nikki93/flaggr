@@ -71,10 +71,18 @@ function client.draw()
             end
 
             do -- Alive players
+                local halfPing = math.min(3 * 0.16, 0.5 * client.getPing())
                 for clientId, player in pairs(share.players) do
                     if not player.died then
+                        local x, y = player.x, player.y
+                        if player.xSetTime and player.vx then
+                            x = player.x + math.max(0, share.time - halfPing - player.xSetTime) * player.vx
+                        end
+                        if player.ySetTime and player.vy then
+                            y = player.y + math.max(0, share.time - halfPing - player.ySetTime) * player.vy
+                        end
                         love.graphics.setColor(0, 1, 0)
-                        love.graphics.rectangle('fill', player.x, player.y, G, G)
+                        love.graphics.rectangle('fill', x, y, G, G)
                     end
                 end
             end
@@ -153,8 +161,8 @@ function client.update(dt)
             share.time = share.time + dt
         end
 
-        do -- Our player
-            -- playerApplyWalk(share.players[client.id], dt)
+        do -- Log overlaps
+            applyLogOverlaps(share, dt)
         end
     end
 end
