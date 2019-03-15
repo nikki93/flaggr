@@ -1,6 +1,6 @@
 require 'common'
 
-local moonshine = require 'https://raw.githubusercontent.com/nikki93/moonshine/master/init.lua'
+local moonshine = require 'https://raw.githubusercontent.com/nikki93/moonshine/9e04869e3ceaa76c42a69c52a954ea7f6af0469c/init.lua'
 
 
 --- CLIENT
