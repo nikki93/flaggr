@@ -48,10 +48,10 @@ end
 
 --- DRAW
 
-local deathFont = love.graphics and love.graphics.newFont('font.ttf', 36)
-local scoreFont = love.graphics and love.graphics.newFont('font.ttf', 24)
-local flagResetFont = love.graphics and love.graphics.newFont('font.ttf', 20)
-local instrFont = love.graphics and love.graphics.newFont('font.ttf', 20)
+local deathFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 36)
+local scoreFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 24)
+local flagResetFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 20)
+local instrFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 20)
 
 function client.draw()
     if client.connected then
