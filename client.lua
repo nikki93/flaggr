@@ -186,10 +186,10 @@ function client.draw()
                         if not player.died then
                             local x, y = player.x, player.y
                             if player.xSetTime and player.vx then
-                                x = player.x + 0.8 * math.min(math.max(0, share.time - player.xSetTime), 0.5) * player.vx
+                                x = player.x + 0.9 * math.min(math.max(0, share.time - player.xSetTime), 0.5) * player.vx
                             end
                             if player.ySetTime and player.vy then
-                                y = player.y + 0.8 * math.min(math.max(0, share.time - player.ySetTime), 0.5) * player.vy
+                                y = player.y + 0.9 * math.min(math.max(0, share.time - player.ySetTime), 0.5) * player.vy
                             end
 
                             if not player.smoothX then
@@ -199,10 +199,10 @@ function client.draw()
                                 player.smoothY = player.y
                             end
 
-                            player.smoothX = player.smoothX + 0.2 * (player.x - player.smoothX)
-                            player.smoothY = player.smoothY + 0.2 * (player.y - player.smoothY)
-                            player.smoothX = player.smoothX + 0.1 * (x - player.smoothX)
-                            player.smoothY = player.smoothY + 0.1 * (y - player.smoothY)
+                            player.smoothX = player.smoothX + 0.4 * (player.x - player.smoothX)
+                            player.smoothY = player.smoothY + 0.4 * (player.y - player.smoothY)
+                            player.smoothX = player.smoothX + 0.2 * (x - player.smoothX)
+                            player.smoothY = player.smoothY + 0.2 * (y - player.smoothY)
 
                             drawPlayer(player, player.smoothX, player.smoothY, clientId == client.id)
 
