@@ -51,6 +51,10 @@ function resetFlag()
     share.flag.dropTime = nil -- `share.time` when flag was droppped, watch to reset
 end
 
+function randomSelect(elems)
+    return elems[math.random(#elems)]
+end
+
 
 --- LOAD
 
@@ -245,6 +249,7 @@ function server.update(dt)
                     car.startX = W
                     car.xSpeed = -spawn.xSpeed
                 end
+                car.spriteName = randomSelect(spawn.spriteNames)
             end
         end
     end

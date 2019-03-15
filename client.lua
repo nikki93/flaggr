@@ -53,6 +53,16 @@ local scoreFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 24)
 local flagResetFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 20)
 local instrFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 20)
 
+local sprites = {}
+
+if love.graphics then
+    sprites['car1-224x122.png'] = love.graphics.newImage('sprites/car1-224x122.png')
+    sprites['car2-224x122.png'] = love.graphics.newImage('sprites/car2-224x122.png')
+    sprites['car3-224x122.png'] = love.graphics.newImage('sprites/car3-224x122.png')
+    sprites['car1-336x122.png'] = love.graphics.newImage('sprites/car1-336x122.png')
+    sprites['car2-336x122.png'] = love.graphics.newImage('sprites/car2-336x122.png')
+end
+
 function client.draw()
     if client.connected then
         love.graphics.stacked('all', function()
@@ -86,9 +96,15 @@ function client.draw()
             end
 
             do -- Cars
+                love.graphics.setColor(1, 1, 1)
                 for carId, car in pairs(share.cars) do
-                    love.graphics.setColor(0.7, 0.7, 0.7)
-                    love.graphics.rectangle('fill', car.startX + (share.time - car.startTime) * car.xSpeed, car.y, car.length, G)
+                    local sprite = sprites[car.spriteName]
+                    local flip = car.xSpeed < 0
+                    love.graphics.draw(sprite,
+                        car.startX + (share.time - car.startTime) * car.xSpeed + (flip and car.length or 0), car.y,
+                        0,
+                        (flip and -1 or 1) * car.length / sprite:getWidth(),
+                        G / sprite:getHeight())
                 end
             end
 

@@ -35,6 +35,12 @@ CAR_SPAWNS = {
         timerMin = (1 / EASINESS) * 0.8,
         timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
+        spriteNames = {
+            'car1-224x122.png',
+            'car1-224x122.png',
+            'car2-224x122.png',
+            'car3-224x122.png',
+        }
     },
     {
         y = 17 * G,
@@ -43,6 +49,10 @@ CAR_SPAWNS = {
         timerMin = (1 / EASINESS) * 0.8,
         timerMax = (1 / EASINESS) * 2,
         length = 3 * G,
+        spriteNames = {
+            'car1-336x122.png',
+            'car2-336x122.png',
+        }
     },
     {
         y = 16 * G,
@@ -51,6 +61,13 @@ CAR_SPAWNS = {
         timerMin = (1 / EASINESS) * 0.8,
         timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
+        spriteNames = {
+            'car1-224x122.png',
+            'car2-224x122.png',
+            'car2-224x122.png',
+            'car3-224x122.png',
+            'car3-224x122.png',
+        }
     },
 
     -- Trains
@@ -61,6 +78,9 @@ CAR_SPAWNS = {
         timerMin = (1 / EASINESS) * 5,
         timerMax = (1 / EASINESS) * 8,
         length = 20 * G,
+        spriteNames = {
+            'car1-224x122.png',
+        }
     },
     {
         y = 13 * G,
@@ -69,6 +89,9 @@ CAR_SPAWNS = {
         timerMin = (1 / EASINESS) * 5,
         timerMax = (1 / EASINESS) * 8,
         length = 20 * G,
+        spriteNames = {
+            'car1-224x122.png',
+        }
     },
 }
 
