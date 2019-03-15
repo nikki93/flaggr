@@ -72,7 +72,9 @@ end
 local bgrImg = love.graphics and love.graphics.newImage('sprites/bgr.png')
 
 local waterImg = love.graphics and love.graphics.newImage('sprites/water.jpg')
-waterImg:setWrap('repeat')
+if waterImg then
+    waterImg:setWrap('repeat')
+end
 
 local effect
 
