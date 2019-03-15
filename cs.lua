@@ -7,7 +7,7 @@ local serpent = require 'https://raw.githubusercontent.com/pkulchenko/serpent/52
 
 
 local MAX_MAX_CLIENTS = 64
-local NETWORK_UPDATE_FREQ = 10
+local NETWORK_UPDATE_FREQ = 25
 
 local server = {}
 do
