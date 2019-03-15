@@ -62,6 +62,9 @@ if love.graphics then
     sprites['car1-336x122.png'] = love.graphics.newImage('sprites/car1-336x122.png')
     sprites['car2-336x122.png'] = love.graphics.newImage('sprites/car2-336x122.png')
     sprites['car1-2240x122.png'] = love.graphics.newImage('sprites/car1-2240x122.png')
+
+    sprites['log1.png'] = love.graphics.newImage('sprites/log1.png')
+    sprites['log2.png'] = love.graphics.newImage('sprites/log2.png')
 end
 
 local bgrImg = love.graphics and love.graphics.newImage('sprites/bgr.png')
@@ -96,9 +99,14 @@ function client.draw()
             end
 
             do -- Logs
+                love.graphics.setColor(1, 1, 1)
                 for logId, log in pairs(share.logs) do
-                    love.graphics.setColor(0.65, 0.26, 0.26)
-                    love.graphics.rectangle('fill', log.startX + (share.time - log.startTime) * log.xSpeed, log.y, log.length, G)
+                    local sprite = sprites[log.spriteName]
+                    love.graphics.draw(sprite,
+                        log.startX + (share.time - log.startTime) * log.xSpeed, log.y,
+                        0,
+                        log.length / sprite:getWidth(),
+                        G / sprite:getHeight())
                 end
             end
 

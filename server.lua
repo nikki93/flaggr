@@ -283,6 +283,7 @@ function server.update(dt)
                     log.startX = W
                     log.xSpeed = -spawn.xSpeed
                 end
+                log.spriteName = randomSelect(spawn.spriteNames)
             end
         end
     end

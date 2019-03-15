@@ -110,6 +110,10 @@ LOG_SPAWNS = {
         timerMin = (1 / EASINESS) * 0.8,
         timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
+        spriteNames = {
+            'log1.png',
+            'log2.png',
+        },
     },
     {
         y = 11 * G,
@@ -118,6 +122,10 @@ LOG_SPAWNS = {
         timerMin = (1 / EASINESS) * 0.8,
         timerMax = (1 / EASINESS) * 2,
         length = 2 * G,
+        spriteNames = {
+            'log1.png',
+            'log2.png',
+        },
     },
     {
         y = 10 * G,
@@ -126,6 +134,10 @@ LOG_SPAWNS = {
         timerMin = (1 / EASINESS) * 0.8,
         timerMax = (1 / EASINESS) * 2,
         length = 2.7 * G,
+        spriteNames = {
+            'log1.png',
+            'log2.png',
+        },
     },
     {
         y = 9 * G,
@@ -134,6 +146,10 @@ LOG_SPAWNS = {
         timerMin = (1 / EASINESS) * 0.2,
         timerMax = (1 / EASINESS) * 0.8,
         length = 1.6 * G,
+        spriteNames = {
+            'log1.png',
+            'log2.png',
+        },
     },
 }
 
