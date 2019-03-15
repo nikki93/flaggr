@@ -99,7 +99,7 @@ function client.resize(w, h)
 end
 
 function client.draw()
-    if client.connected then
+    if client.connected then -- Effect parameters
         local myPlayer = share.players[client.id]
         if myPlayer.died then
             local timeSinceDeath = share.time - myPlayer.deathTime
@@ -109,8 +109,9 @@ function client.draw()
         else
             effect.godsray.exposure = 0.0
         end
+    end
 
-        effect(function()
+    effect(function()
         love.graphics.stacked('all', function()
             do -- Centering
                 local w, h = love.graphics.getDimensions()
@@ -119,183 +120,190 @@ function client.draw()
                 love.graphics.translate(dx, dy)
             end
 
-            do -- Background
-                love.graphics.draw(bgrImg, 0, 0, 0, 0.3333333333)
-            end
+            if client.connected then -- In-game
+                do -- Background
+                    love.graphics.draw(bgrImg, 0, 0, 0, 0.3333333333)
+                end
 
-            do -- Waters
-                for _, water in pairs(share.waters) do
-                    love.graphics.setColor(0.82, 0.82, 0.82)
-                    local quad = love.graphics.newQuad(40 * love.timer.getTime(), 2 * love.timer.getTime(), W, water.maxY - water.minY, waterImg:getDimensions())
-                    love.graphics.draw(waterImg, quad, 0, water.minY)
-                    love.graphics.stacked('all', function()
-                        love.graphics.setBlendMode('add')
-                        love.graphics.setColor(0.55, 0.55, 0.55)
-                        local quad = love.graphics.newQuad(-70 * love.timer.getTime(), 0, W, water.maxY - water.minY, waterImg:getDimensions())
+                do -- Waters
+                    for _, water in pairs(share.waters) do
+                        love.graphics.setColor(0.82, 0.82, 0.82)
+                        local quad = love.graphics.newQuad(40 * love.timer.getTime(), 2 * love.timer.getTime(), W, water.maxY - water.minY, waterImg:getDimensions())
                         love.graphics.draw(waterImg, quad, 0, water.minY)
-                    end)
-                end
-            end
-
-            do -- Dead players
-                for clientId, player in pairs(share.players) do
-                    if player.died then
-                        drawPlayer(player, player.x, player.y, clientId == client.id)
+                        love.graphics.stacked('all', function()
+                            love.graphics.setBlendMode('add')
+                            love.graphics.setColor(0.55, 0.55, 0.55)
+                            local quad = love.graphics.newQuad(-70 * love.timer.getTime(), 0, W, water.maxY - water.minY, waterImg:getDimensions())
+                            love.graphics.draw(waterImg, quad, 0, water.minY)
+                        end)
                     end
                 end
-            end
 
-            do -- Logs
-                love.graphics.setColor(1, 1, 1)
-                for logId, log in pairs(share.logs) do
-                    local sprite = sprites[log.spriteName]
-                    love.graphics.draw(sprite,
-                        log.startX + (share.time - log.startTime) * log.xSpeed, log.y,
-                        0,
-                        log.length / sprite:getWidth(),
-                        G / sprite:getHeight())
-                end
-            end
-
-            do -- Cars
-                love.graphics.setColor(1, 1, 1)
-                for carId, car in pairs(share.cars) do
-                    local sprite = sprites[car.spriteName]
-                    local flip = car.xSpeed < 0
-                    love.graphics.draw(sprite,
-                        car.startX + (share.time - car.startTime) * car.xSpeed + (flip and car.length or 0), car.y,
-                        0,
-                        (flip and -1 or 1) * car.length / sprite:getWidth(),
-                        G / sprite:getHeight())
-                end
-            end
-
-            do -- Alive players
-                local halfPing = math.min(3 * 0.16, 0.5 * client.getPing())
-                for clientId, player in pairs(share.players) do
-                    if not player.died then
-                        local x, y = player.x, player.y
-                        if player.xSetTime and player.vx then
-                            x = player.x + math.max(0, share.time - halfPing - player.xSetTime) * player.vx
+                do -- Dead players
+                    for clientId, player in pairs(share.players) do
+                        if player.died then
+                            drawPlayer(player, player.x, player.y, clientId == client.id)
                         end
-                        if player.ySetTime and player.vy then
-                            y = player.y + math.max(0, share.time - halfPing - player.ySetTime) * player.vy
-                        end
-                        drawPlayer(player, x, y, clientId == client.id)
                     end
                 end
-            end
 
-            do -- Flag
-                love.graphics.setColor(1, 1, 0)
-                if share.flag.carrierClientId then
-                    love.graphics.rectangle('fill',
-                        share.flag.x - 0.5 * FLAG_CARRIED_SIZE, share.flag.y - 0.5 * FLAG_CARRIED_SIZE,
-                        FLAG_CARRIED_SIZE, FLAG_CARRIED_SIZE)
-                else
-                    love.graphics.rectangle('fill', share.flag.x, share.flag.y, FLAG_UNCARRIED_SIZE, FLAG_UNCARRIED_SIZE)
+                do -- Logs
+                    love.graphics.setColor(1, 1, 1)
+                    for logId, log in pairs(share.logs) do
+                        local sprite = sprites[log.spriteName]
+                        love.graphics.draw(sprite,
+                            log.startX + (share.time - log.startTime) * log.xSpeed, log.y,
+                            0,
+                            log.length / sprite:getWidth(),
+                            G / sprite:getHeight())
+                    end
                 end
-            end
 
-            do -- Bombs
-                for bombId, bomb in pairs(share.bombs) do
+                do -- Cars
+                    love.graphics.setColor(1, 1, 1)
+                    for carId, car in pairs(share.cars) do
+                        local sprite = sprites[car.spriteName]
+                        local flip = car.xSpeed < 0
+                        love.graphics.draw(sprite,
+                            car.startX + (share.time - car.startTime) * car.xSpeed + (flip and car.length or 0), car.y,
+                            0,
+                            (flip and -1 or 1) * car.length / sprite:getWidth(),
+                            G / sprite:getHeight())
+                    end
+                end
+
+                do -- Alive players
+                    local halfPing = math.min(3 * 0.16, 0.5 * client.getPing())
+                    for clientId, player in pairs(share.players) do
+                        if not player.died then
+                            local x, y = player.x, player.y
+                            if player.xSetTime and player.vx then
+                                x = player.x + math.max(0, share.time - halfPing - player.xSetTime) * player.vx
+                            end
+                            if player.ySetTime and player.vy then
+                                y = player.y + math.max(0, share.time - halfPing - player.ySetTime) * player.vy
+                            end
+                            drawPlayer(player, x, y, clientId == client.id)
+                        end
+                    end
+                end
+
+                do -- Flag
                     love.graphics.setColor(1, 1, 0)
-                    local r = BOMB_RADIUS * math.max(0, 1 - (share.time - bomb.startTime) / BOMB_DRAW_TIME)
-                    love.graphics.circle('fill', bomb.x, bomb.y, r, r)
-                end
-            end
-
-            do -- Border
-                love.graphics.setColor(1, 1, 1)
-                love.graphics.setLineWidth(6)
-                love.graphics.line(1, 1, 1, H, W, H, W, 1, 1, 1)
-            end
-
-            love.graphics.setScissor()
-
-            do -- Death message
-                local myPlayer = share.players[client.id]
-                if myPlayer.died then
-                    local text = 'DIED, WAIT...'
-                    local w, h = deathFont:getWidth(text), deathFont:getHeight()
-                    love.graphics.stacked('all', function()
-                        love.graphics.setFont(deathFont)
-                        love.graphics.print(text, 0.5 * (W - w), H + 10)
-                    end)
-                end
-            end
-
-            do -- Flag reset message
-                if share.flag.dropTime then
-                    local text = tostring(math.max(0, math.floor(FLAG_DROP_RESET_TIME - (share.time - share.flag.dropTime) + 0.999)))
-                    local w, h = flagResetFont:getWidth(text), flagResetFont:getHeight()
-                    love.graphics.stacked('all', function()
-                        love.graphics.setColor(0, 0, 0)
-                        love.graphics.setFont(flagResetFont)
-                        love.graphics.print(text, share.flag.x + 0.5 * G - 0.5 * w + 2, share.flag.y + 0.5 * G - 0.5 * h + 2)
-                    end)
-                end
-            end
-
-            do -- Flag score message
-                local text = 'FLAGS: ' .. share.score.flags.A .. ', ' .. share.score.flags.B
-                local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
-                love.graphics.stacked('all', function()
-                    love.graphics.setFont(scoreFont)
-                    love.graphics.print({
-                        { 1, 1, 1 }, 'FLAGS: ' ,
-                        { 0, 1, 0 }, tostring(share.score.flags.A) ,
-                        { 1, 1, 1 }, ', ' ,
-                        { 1, 0.2, 1 }, tostring(share.score.flags.B) ,
-                    }, 5, -h - 5)
-                end)
-            end
-
-            do -- Game score message
-                local text = 'GAMES: ' .. share.score.games.A .. ', ' .. share.score.games.B
-                local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
-                love.graphics.stacked('all', function()
-                    love.graphics.setFont(scoreFont)
-                    love.graphics.print({
-                        { 1, 1, 1 }, 'GAMES: ' ,
-                        { 0, 1, 0 }, tostring(share.score.games.A) ,
-                        { 1, 1, 1 }, ', ' ,
-                        { 1, 0.2, 1 }, tostring(share.score.games.B) ,
-                    }, W - w - 5, -h - 5)
-                end)
-            end
-
-            if love.timer.getTime() - clientStartTime < INSTRUCTIONS_SHOW_TIME then -- Instructions message
-                local text = {
-                    { 1, 1, 1 }, 'Arrows to move, SPACE to bomb\nFetch ',
-                    { 1, 1, 0 }, 'FLAG',
-                    { 1, 1, 1 }, ', bring it back down to score\nScore ' .. tostring(SCORE_FLAGS_PER_GAME) .. ' flags to win a GAME!',
-                }
-                local textCat = ''
-                for _, s in ipairs(text) do
-                    if type(s) == 'string' then
-                        textCat = textCat .. s
+                    if share.flag.carrierClientId then
+                        love.graphics.rectangle('fill',
+                            share.flag.x - 0.5 * FLAG_CARRIED_SIZE, share.flag.y - 0.5 * FLAG_CARRIED_SIZE,
+                            FLAG_CARRIED_SIZE, FLAG_CARRIED_SIZE)
+                    else
+                        love.graphics.rectangle('fill', share.flag.x, share.flag.y, FLAG_UNCARRIED_SIZE, FLAG_UNCARRIED_SIZE)
                     end
                 end
-                local w, h = instrFont:getWidth(textCat), instrFont:getHeight()
+
+                do -- Bombs
+                    for bombId, bomb in pairs(share.bombs) do
+                        love.graphics.setColor(1, 1, 0)
+                        local r = BOMB_RADIUS * math.max(0, 1 - (share.time - bomb.startTime) / BOMB_DRAW_TIME)
+                        love.graphics.circle('fill', bomb.x, bomb.y, r, r)
+                    end
+                end
+
+                do -- Border
+                    love.graphics.setColor(1, 1, 1)
+                    love.graphics.setLineWidth(6)
+                    love.graphics.line(1, 1, 1, H, W, H, W, 1, 1, 1)
+                end
+
+                love.graphics.setScissor()
+
+                do -- Death message
+                    local myPlayer = share.players[client.id]
+                    if myPlayer.died then
+                        local text = 'DIED, WAIT...'
+                        local w, h = deathFont:getWidth(text), deathFont:getHeight()
+                        love.graphics.stacked('all', function()
+                            love.graphics.setFont(deathFont)
+                            love.graphics.print(text, 0.5 * (W - w), H + 10)
+                        end)
+                    end
+                end
+
+                do -- Flag reset message
+                    if share.flag.dropTime then
+                        local text = tostring(math.max(0, math.floor(FLAG_DROP_RESET_TIME - (share.time - share.flag.dropTime) + 0.999)))
+                        local w, h = flagResetFont:getWidth(text), flagResetFont:getHeight()
+                        love.graphics.stacked('all', function()
+                            love.graphics.setColor(0, 0, 0)
+                            love.graphics.setFont(flagResetFont)
+                            love.graphics.print(text, share.flag.x + 0.5 * G - 0.5 * w + 2, share.flag.y + 0.5 * G - 0.5 * h + 2)
+                        end)
+                    end
+                end
+
+                do -- Flag score message
+                    local text = 'FLAGS: ' .. share.score.flags.A .. ', ' .. share.score.flags.B
+                    local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
+                    love.graphics.stacked('all', function()
+                        love.graphics.setFont(scoreFont)
+                        love.graphics.print({
+                            { 1, 1, 1 }, 'FLAGS: ' ,
+                            { 0, 1, 0 }, tostring(share.score.flags.A) ,
+                            { 1, 1, 1 }, ', ' ,
+                            { 1, 0.2, 1 }, tostring(share.score.flags.B) ,
+                        }, 5, -h - 5)
+                    end)
+                end
+
+                do -- Game score message
+                    local text = 'GAMES: ' .. share.score.games.A .. ', ' .. share.score.games.B
+                    local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
+                    love.graphics.stacked('all', function()
+                        love.graphics.setFont(scoreFont)
+                        love.graphics.print({
+                            { 1, 1, 1 }, 'GAMES: ' ,
+                            { 0, 1, 0 }, tostring(share.score.games.A) ,
+                            { 1, 1, 1 }, ', ' ,
+                            { 1, 0.2, 1 }, tostring(share.score.games.B) ,
+                        }, W - w - 5, -h - 5)
+                    end)
+                end
+
+                if love.timer.getTime() - clientStartTime < INSTRUCTIONS_SHOW_TIME then -- Instructions message
+                    local text = {
+                        { 1, 1, 1 }, 'Arrows to move, SPACE to bomb\nFetch ',
+                        { 1, 1, 0 }, 'FLAG',
+                        { 1, 1, 1 }, ', bring it back down to score\nScore ' .. tostring(SCORE_FLAGS_PER_GAME) .. ' flags to win a GAME!',
+                    }
+                    local textCat = ''
+                    for _, s in ipairs(text) do
+                        if type(s) == 'string' then
+                            textCat = textCat .. s
+                        end
+                    end
+                    local w, h = instrFont:getWidth(textCat), instrFont:getHeight()
+                    love.graphics.stacked('all', function()
+                        love.graphics.setFont(instrFont)
+                        love.graphics.printf(text, 0.5 * (W - w), H + 10 + deathFont:getHeight() + 5, w, 'center')
+                    end)
+                end
+
+                if DEBUG then -- Debug
+                    love.graphics.setLineWidth(1)
+                    for i = 0, H / G - 1 do
+                        love.graphics.print(i, -20, i * G + 4)
+                        love.graphics.line(0, i * G, W, i * G)
+                    end
+                end
+            else -- Not in-game
+                local text = 'Connecting...'
+                local w, h = scoreFont:getWidth(text), scoreFont:getHeight()
+                local ww, wh = love.graphics.getDimensions()
                 love.graphics.stacked('all', function()
-                    love.graphics.setFont(instrFont)
-                    love.graphics.printf(text, 0.5 * (W - w), H + 10 + deathFont:getHeight() + 5, w, 'center')
+                    love.graphics.setFont(scoreFont)
+                    love.graphics.print(text, 0.5 * (W - w), 0.5 * (H - h))
                 end)
             end
-
-            if DEBUG then -- Debug
-                love.graphics.setLineWidth(1)
-                for i = 0, H / G - 1 do
-                    love.graphics.print(i, -20, i * G + 4)
-                    love.graphics.line(0, i * G, W, i * G)
-                end
-            end
         end)
-        end)
-    else
-        love.graphics.print('connecting', 20, 20)
-    end
+    end)
 end
 
 
