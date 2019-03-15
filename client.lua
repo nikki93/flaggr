@@ -71,6 +71,9 @@ end
 
 local bgrImg = love.graphics and love.graphics.newImage('sprites/bgr.png')
 
+local waterImg = love.graphics and love.graphics.newImage('sprites/water.jpg')
+waterImg:setWrap('repeat')
+
 local effect
 
 if love.graphics then
@@ -120,8 +123,15 @@ function client.draw()
 
             do -- Waters
                 for _, water in pairs(share.waters) do
-                    love.graphics.setColor(0, 0, 1)
-                    love.graphics.rectangle('fill', 0, water.minY, W, water.maxY - water.minY)
+                    love.graphics.setColor(0.82, 0.82, 0.82)
+                    local quad = love.graphics.newQuad(40 * love.timer.getTime(), 2 * love.timer.getTime(), W, water.maxY - water.minY, waterImg:getDimensions())
+                    love.graphics.draw(waterImg, quad, 0, water.minY)
+                    love.graphics.stacked('all', function()
+                        love.graphics.setBlendMode('add')
+                        love.graphics.setColor(0.55, 0.55, 0.55)
+                        local quad = love.graphics.newQuad(-70 * love.timer.getTime(), 0, W, water.maxY - water.minY, waterImg:getDimensions())
+                        love.graphics.draw(waterImg, quad, 0, water.minY)
+                    end)
                 end
             end
 
