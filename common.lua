@@ -79,7 +79,7 @@ CAR_SPAWNS = {
         timerMax = (1 / EASINESS) * 8,
         length = 20 * G,
         spriteNames = {
-            'car1-224x122.png',
+            'car1-2240x122.png',
         }
     },
     {
@@ -90,7 +90,7 @@ CAR_SPAWNS = {
         timerMax = (1 / EASINESS) * 8,
         length = 20 * G,
         spriteNames = {
-            'car1-224x122.png',
+            'car1-2240x122.png',
         }
     },
 }

@@ -61,6 +61,7 @@ if love.graphics then
     sprites['car3-224x122.png'] = love.graphics.newImage('sprites/car3-224x122.png')
     sprites['car1-336x122.png'] = love.graphics.newImage('sprites/car1-336x122.png')
     sprites['car2-336x122.png'] = love.graphics.newImage('sprites/car2-336x122.png')
+    sprites['car1-2240x122.png'] = love.graphics.newImage('sprites/car1-2240x122.png')
 end
 
 local bgrImg = love.graphics and love.graphics.newImage('sprites/bgr.png')
