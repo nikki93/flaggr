@@ -63,6 +63,8 @@ if love.graphics then
     sprites['car2-336x122.png'] = love.graphics.newImage('sprites/car2-336x122.png')
 end
 
+local bgrImg = love.graphics and love.graphics.newImage('sprites/bgr.png')
+
 function client.draw()
     if client.connected then
         love.graphics.stacked('all', function()
@@ -71,6 +73,10 @@ function client.draw()
                 local dx, dy = 0.5 * (w - W), 0.5 * (h - H)
                 love.graphics.setScissor(dx, dy, W, H)
                 love.graphics.translate(dx, dy)
+            end
+
+            do -- Background
+                love.graphics.draw(bgrImg, 0, 0, 0, 0.3333333333)
             end
 
             do -- Waters
