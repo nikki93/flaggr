@@ -9,10 +9,10 @@ G = 28 -- Grid size
 EASINESS = 0.85
 
 PLAYER_X_SPEED = 250
-PLAYER_Y_SPEED = 380
-PLAYER_KEY_DELAY = 0.06
-PLAYER_COL_X_EPS = 0.1 * G
-PLAYER_COL_Y_EPS = 0.1 * G
+PLAYER_Y_SPEED = 365
+PLAYER_KEY_DELAY = 0.09
+PLAYER_COL_X_EPS = 0.2 * G
+PLAYER_COL_Y_EPS = 0.2 * G
 PLAYER_DEATH_RESET_TIME = 1
 
 BOMB_RADIUS = 2.5 * G
@@ -258,8 +258,8 @@ function applyLogOverlaps(share, dt)
             player.onLog = false
             for logId, log in pairs(share.logs) do
                 local logX = log.startX + (share.time - log.startTime) * log.xSpeed
-                if player.x + PLAYER_COL_X_EPS <= logX + log.length and player.x + G >= logX + PLAYER_COL_X_EPS and
-                    player.y + PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + PLAYER_COL_Y_EPS then
+                if player.x + 0.2 * PLAYER_COL_X_EPS <= logX + log.length and player.x + G >= logX + 0.2 * PLAYER_COL_X_EPS and
+                    player.y + 0.2 * PLAYER_COL_Y_EPS < log.y + G and player.y + G > log.y + 0.2 * PLAYER_COL_Y_EPS then
                     player.onLog = true
                     local yDiff = math.abs(player.y - log.y)
                     if not minYDiff or yDiff < minYDiff then
