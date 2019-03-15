@@ -77,14 +77,11 @@ if love.graphics then
     effect = effect or moonshine(moonshine.effects.glow)
         .chain(moonshine.effects.godsray)
         .chain(moonshine.effects.pixelate)
-        .chain(moonshine.effects.filmgrain)
         .chain(moonshine.effects.crt)
 
     effect.pixelate.size = {1.2, 1.2}
     effect.pixelate.feedback = 0.0
     effect.glow.strength = 1
-    effect.filmgrain.size = 5.0
-    effect.filmgrain.opacity = 0.1
     effect.crt.x = 1.05
     effect.crt.y = 1.05
     effect.crt.feather = 0.1
