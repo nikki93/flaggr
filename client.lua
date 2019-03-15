@@ -71,25 +71,29 @@ end
 
 local bgrImg = love.graphics and love.graphics.newImage('sprites/bgr.png')
 
-local screen_effect = screen_effect or moonshine(moonshine.effects.glow)
-    .chain(moonshine.effects.godsray)
-    .chain(moonshine.effects.pixelate)
-    .chain(moonshine.effects.filmgrain)
-    .chain(moonshine.effects.crt)
+local effect
 
-screen_effect.pixelate.size = {1.2, 1.2}
-screen_effect.pixelate.feedback = 0.0
-screen_effect.glow.strength = 1
-screen_effect.filmgrain.size = 5.0
-screen_effect.filmgrain.opacity = 0.1
-screen_effect.crt.x = 1.05
-screen_effect.crt.y = 1.05
-screen_effect.crt.feather = 0.1
+if love.graphics then
+    effect = effect or moonshine(moonshine.effects.glow)
+        .chain(moonshine.effects.godsray)
+        .chain(moonshine.effects.pixelate)
+        .chain(moonshine.effects.filmgrain)
+        .chain(moonshine.effects.crt)
 
-screen_effect.godsray.exposure = 0.0
+    effect.pixelate.size = {1.2, 1.2}
+    effect.pixelate.feedback = 0.0
+    effect.glow.strength = 1
+    effect.filmgrain.size = 5.0
+    effect.filmgrain.opacity = 0.1
+    effect.crt.x = 1.05
+    effect.crt.y = 1.05
+    effect.crt.feather = 0.1
+
+    effect.godsray.exposure = 0.0
+end
 
 function client.resize(w, h)
-    screen_effect.resize(w, h)
+    effect.resize(w, h)
 end
 
 function client.draw()
@@ -98,13 +102,13 @@ function client.draw()
         if myPlayer.died then
             local timeSinceDeath = share.time - myPlayer.deathTime
             if timeSinceDeath < 0.3 then
-                screen_effect.godsray.exposure = math.max(0, 0.2 * (0.3 - timeSinceDeath))
+                effect.godsray.exposure = math.max(0, 0.2 * (0.3 - timeSinceDeath))
             end
         else
-            screen_effect.godsray.exposure = 0.0
+            effect.godsray.exposure = 0.0
         end
 
-        screen_effect(function()
+        effect(function()
         love.graphics.stacked('all', function()
             do -- Centering
                 local w, h = love.graphics.getDimensions()
