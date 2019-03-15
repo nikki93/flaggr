@@ -242,11 +242,11 @@ function server.update(dt)
                 car.length = spawn.length
                 car.startTime = share.time
                 if spawn.dir == 'right' then
-                    car.startX = -car.length
+                    car.startX = -car.length - SPAWN_BUFFER
                     car.xSpeed = spawn.xSpeed
                 end
                 if spawn.dir == 'left' then
-                    car.startX = W
+                    car.startX = W + SPAWN_BUFFER
                     car.xSpeed = -spawn.xSpeed
                 end
                 car.spriteName = randomSelect(spawn.spriteNames)
@@ -276,14 +276,32 @@ function server.update(dt)
                 log.length = spawn.length
                 log.startTime = share.time
                 if spawn.dir == 'right' then
-                    log.startX = -log.length
+                    log.startX = -log.length - SPAWN_BUFFER
                     log.xSpeed = spawn.xSpeed
                 end
                 if spawn.dir == 'left' then
-                    log.startX = W
+                    log.startX = W + SPAWN_BUFFER
                     log.xSpeed = -spawn.xSpeed
                 end
                 log.spriteName = randomSelect(spawn.spriteNames)
+            end
+        end
+    end
+
+    do -- Car despawns
+        for carId, car in pairs(share.cars) do
+            local carX = car.startX + (share.time - car.startTime) * car.xSpeed
+            if carX < -50 * G or carX > 50 * G then
+                share.cars[carId] = nil
+            end
+        end
+    end
+
+    do -- Log despawns
+        for logId, log in pairs(share.logs) do
+            local logX = log.startX + (share.time - log.startTime) * log.xSpeed
+            if logX < -50 * G or logX > 50 * G then
+                share.logs[logId] = nil
             end
         end
     end

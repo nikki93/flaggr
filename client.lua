@@ -143,7 +143,15 @@ function client.draw()
                 do -- Dead players
                     for clientId, player in pairs(share.players) do
                         if player.died then
-                            drawPlayer(player, player.x, player.y, clientId == client.id)
+                            if player.smoothX then
+                                player.oldSmoothX = player.smoothX
+                                player.smoothX = nil
+                            end
+                            if player.smoothY then
+                                player.oldSmoothY = player.smoothY
+                                player.smoothY = nil
+                            end
+                            drawPlayer(player, player.oldSmoothX, player.oldSmoothY, clientId == client.id)
                         end
                     end
                 end
@@ -174,28 +182,43 @@ function client.draw()
                 end
 
                 do -- Alive players
-                    local halfPing = math.min(3 * 0.16, 0.5 * client.getPing())
                     for clientId, player in pairs(share.players) do
                         if not player.died then
                             local x, y = player.x, player.y
                             if player.xSetTime and player.vx then
-                                x = player.x + math.max(0, share.time - halfPing - player.xSetTime) * player.vx
+                                x = player.x + 0.8 * math.min(math.max(0, share.time - player.xSetTime), 0.5) * player.vx
                             end
                             if player.ySetTime and player.vy then
-                                y = player.y + math.max(0, share.time - halfPing - player.ySetTime) * player.vy
+                                y = player.y + 0.8 * math.min(math.max(0, share.time - player.ySetTime), 0.5) * player.vy
                             end
-                            drawPlayer(player, x, y, clientId == client.id)
+
+                            if not player.smoothX then
+                                player.smoothX = player.x
+                            end
+                            if not player.smoothY then
+                                player.smoothY = player.y
+                            end
+
+                            player.smoothX = player.smoothX + 0.2 * (player.x - player.smoothX)
+                            player.smoothY = player.smoothY + 0.2 * (player.y - player.smoothY)
+                            player.smoothX = player.smoothX + 0.1 * (x - player.smoothX)
+                            player.smoothY = player.smoothY + 0.1 * (y - player.smoothY)
+
+                            drawPlayer(player, player.smoothX, player.smoothY, clientId == client.id)
+
+                            if share.flag.carrierClientId == clientId then -- Carrys flag?
+                                love.graphics.setColor(1, 1, 0)
+                                love.graphics.rectangle('fill',
+                                    player.smoothX - 0.5 * FLAG_CARRIED_SIZE, player.smoothY - 0.5 * FLAG_CARRIED_SIZE,
+                                    FLAG_CARRIED_SIZE, FLAG_CARRIED_SIZE)
+                            end
                         end
                     end
                 end
 
-                do -- Flag
+                do -- Uncarried flag
                     love.graphics.setColor(1, 1, 0)
-                    if share.flag.carrierClientId then
-                        love.graphics.rectangle('fill',
-                            share.flag.x - 0.5 * FLAG_CARRIED_SIZE, share.flag.y - 0.5 * FLAG_CARRIED_SIZE,
-                            FLAG_CARRIED_SIZE, FLAG_CARRIED_SIZE)
-                    else
+                    if not share.flag.carrierClientId then
                         love.graphics.rectangle('fill', share.flag.x, share.flag.y, FLAG_UNCARRIED_SIZE, FLAG_UNCARRIED_SIZE)
                     end
                 end

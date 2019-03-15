@@ -7,7 +7,7 @@ local serpent = require 'https://raw.githubusercontent.com/pkulchenko/serpent/52
 
 
 local MAX_MAX_CLIENTS = 64
-
+local NETWORK_UPDATE_FREQ = 10
 
 local server = {}
 do
@@ -166,7 +166,15 @@ do
         end
     end
 
-    function server.postupdate()
+    local timeSinceLastUpdate = 0
+
+    function server.postupdate(dt)
+        timeSinceLastUpdate = timeSinceLastUpdate + dt
+        if timeSinceLastUpdate < 1 / NETWORK_UPDATE_FREQ then
+            return
+        end
+        timeSinceLastUpdate = 0
+
         -- Send state updates to everyone
         for peer, id in pairs(peerToId) do
             local diff = share:__diff(id)
@@ -333,7 +341,15 @@ do
         end
     end
 
+    local timeSinceLastUpdate = 0
+
     function client.postupdate(dt)
+        timeSinceLastUpdate = timeSinceLastUpdate + dt
+        if timeSinceLastUpdate < 1 / NETWORK_UPDATE_FREQ then
+            -- return -- XXX: jesse does this? ¯\_(ツ)_/¯
+        end
+        timeSinceLastUpdate = 0
+
         -- Send state updates to server
         if peer then
             local diff = home:__diff(0)
