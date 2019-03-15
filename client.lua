@@ -54,6 +54,7 @@ local deathFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 36)
 local scoreFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 24)
 local flagResetFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 20)
 local instrFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 20)
+local pingFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 16)
 
 local sprites = {}
 
@@ -283,6 +284,14 @@ function client.draw()
                     love.graphics.stacked('all', function()
                         love.graphics.setFont(instrFont)
                         love.graphics.printf(text, 0.5 * (W - w), H + 10 + deathFont:getHeight() + 5, w, 'center')
+                    end)
+                end
+
+                do -- Ping, FPS message
+                    local text = 'PING: ' .. client.getPing() .. '\nFPS: ' .. love.timer.getFPS()
+                    love.graphics.stacked('all', function()
+                        love.graphics.setFont(pingFont)
+                        love.graphics.print(text, 0, H + 10)
                     end)
                 end
 
