@@ -95,6 +95,10 @@ if love.graphics then
     effect.godsray.exposure = 0.0
 end
 
+local enableEffect = false
+
+local noEffect = function(foo) foo() end
+
 function client.resize(w, h)
     effect.resize(w, h)
 end
@@ -112,7 +116,7 @@ function client.draw()
         end
     end
 
-    effect(function()
+    (enableEffect and effect or noEffect)(function()
         love.graphics.stacked('all', function()
             do -- Centering
                 local w, h = love.graphics.getDimensions()
@@ -382,6 +386,10 @@ function client.keypressed(key)
 
         if key == 'space' then
             client.send('bomb')
+        end
+
+        if key == 'f' then
+            enableEffect = not enableEffect
         end
     end
 end
