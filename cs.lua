@@ -346,7 +346,7 @@ do
     function client.postupdate(dt)
         timeSinceLastUpdate = timeSinceLastUpdate + dt
         if timeSinceLastUpdate < 1 / NETWORK_UPDATE_FREQ then
-            -- return -- XXX: jesse does this? ¯\_(ツ)_/¯
+            return
         end
         timeSinceLastUpdate = 0
 
