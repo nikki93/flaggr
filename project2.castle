@@ -1,5 +1,5 @@
 ---
-main: castle.lua
+main: main_castle.lua
 title: Flaggr!
 owner: nikki
 coverImage: cover.png
