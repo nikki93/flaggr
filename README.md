@@ -1,4 +1,6 @@
-![Flaggr!](gif.gif "Flaggr!")
+<p align="center">
+  <img src="gif.gif">
+</p>
 
 # Flaggr!
 
