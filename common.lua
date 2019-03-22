@@ -1,4 +1,4 @@
-cs = require 'https://raw.githubusercontent.com/castle-games/share.lua/802190c4b8ce1f7a57c3bc076de773ec9deb6b0e/cs.lua'
+cs = require 'https://raw.githubusercontent.com/castle-games/share.lua/855ab94e9d5f9c57706d474afdb9a4a497507212/cs.lua'
 
 
 --- CONSTANTS
