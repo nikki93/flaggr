@@ -75,10 +75,6 @@ if waterImg then
     waterImg:setWrap('repeat')
 end
 
-function client.resize(w, h)
-    effect.resize(w, h)
-end
-
 function client.draw()
     love.graphics.stacked('all', function()
         do -- Centering
@@ -348,10 +344,6 @@ function client.keypressed(key)
 
         if key == 'space' then
             client.send('bomb')
-        end
-
-        if key == 'f' then
-            enableEffect = not enableEffect
         end
     end
 end
