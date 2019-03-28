@@ -18,6 +18,8 @@ local home = client.home
 
 --- UTIL
 
+local playerFont = love.graphics and love.graphics.newFont('fonts/font.ttf', 16)
+
 function drawPlayer(player, x, y, isOwn)
     local f = player.died and 0.4 or 1
     if player.team == 'A' then
@@ -26,11 +28,33 @@ function drawPlayer(player, x, y, isOwn)
     if player.team == 'B' then
         love.graphics.setColor(f, f * 0.2, f)
     end
-    love.graphics.circle('fill', x + 0.5 * G, y + 0.5 * G, 0.5 * G)
-    if isOwn then
-        love.graphics.setLineWidth(4)
+
+    if player.me then
+        if not player.photoRequested then
+            player.photoRequested = true
+            network.async(function()
+                player.photo = love.graphics.newImage(player.me.photoUrl)
+            end)
+        end
+    end
+
+    if player.photo then
+        love.graphics.draw(player.photo, x, y, 0, G / player.photo:getWidth(), G / player.photo:getHeight())
+    else
+        love.graphics.circle('fill', x + 0.5 * G, y + 0.5 * G, 0.5 * G)
+        if isOwn then
+            love.graphics.setLineWidth(4)
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.circle('line', x + 0.5 * G, y + 0.5 * G, 0.5 * G - 2)
+        end
+    end
+
+    if love.keyboard.isDown('tab') and player.me then
+        local username = player.me.username
+        local tw, th = playerFont:getWidth(username), playerFont:getHeight()
         love.graphics.setColor(1, 1, 1)
-        love.graphics.circle('line', x + 0.5 * G, y + 0.5 * G, 0.5 * G - 2)
+        love.graphics.setFont(playerFont)
+        love.graphics.print(username, x + 0.5 * G - 0.5 * tw, y - th - 2)
     end
 end
 
@@ -42,6 +66,7 @@ local clientStartTime = love.timer.getTime()
 function client.connect()
     do -- Walk
         home.walk = { up = false, down = false, left = false, right = false }
+        home.me = castle.user.getMe and castle.user.getMe()
     end
 end
 

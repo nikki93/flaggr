@@ -202,6 +202,12 @@ function server.update(dt)
         share.time = love.timer.getTime()
     end
 
+    do -- Player info
+        for clientId, player in pairs(share.players) do
+            player.me = homes[clientId].me
+        end
+    end
+
     do -- Player walks
         for clientId, player in pairs(share.players) do
             if not player.died then
