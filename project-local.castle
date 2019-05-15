@@ -1,8 +1,6 @@
 ---
-main: main_castle.lua
+main: main_local.lua
 title: Flaggr!
 owner: nikki
 coverImage: cover.png
-multiplayer:
-    - enabled: true
 dimensions: 800x800
