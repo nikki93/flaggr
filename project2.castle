@@ -4,5 +4,5 @@ title: Flaggr!
 owner: nikki
 coverImage: cover.png
 multiplayer:
-    - enabled: true
+    enabled: true
 dimensions: 800x800
